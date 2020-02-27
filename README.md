@@ -11,7 +11,7 @@ Emoticons are divided into "mood" categories, and tapping a single emoticon save
 
 
 ## Live Demo
-Select a mood category, and either tap to copy an emoticon to your clipboard or hold down the emoticon to open the share panel and send as a message directly from the app.
+Select a mood category, and either tap to copy an emoticon to your clipboard or hold down the emoticon to open the share panel and send in a message or post directly from the app.
 
 <p align="center">
   <img src="./assets/images/README/demo.gif" width="27%" style="margin:20px;" align="center" />
