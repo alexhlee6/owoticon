@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, Text, View, Clipboard, TouchableOpacity, Share } from 'react-native';
+import { ScrollView, Text, View, Clipboard, TouchableOpacity, Share, Vibration } from 'react-native';
 import { EMOTES, styles } from "./util/MoodUtil";
 import * as Haptics from 'expo-haptics';
 
@@ -21,8 +21,25 @@ class MoodScreen extends React.Component {
     this.setState({emotes: EMOTES[this.state.moodName]});
   }
 
+  // DEVELOPMENT CHECK FOR DUPLICATES:
+  // componentDidUpdate() {
+  //   if (this.state.emotes) {
+  //     let has = [];
+  //     let set = new Set();
+  //     this.state.emotes.forEach(str => {
+  //       if (set.has(str)) {
+  //         has.push(str);
+  //       } else {
+  //         set.add(str);
+  //       }
+  //     });
+  //     if (has.length > 0) alert(has.join(","));
+  //   }
+  // }
+
   handleTouch(str) {
     return () => {
+      Haptics.selectionAsync(Haptics.ImpactFeedbackStyle.Medium);
       Clipboard.setString(str);
       this.setState({justTouched: str});
       setTimeout(() => {
