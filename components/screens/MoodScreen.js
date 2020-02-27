@@ -26,7 +26,9 @@ class MoodScreen extends React.Component {
       Clipboard.setString(str);
       this.setState({justTouched: str});
       setTimeout(() => {
-        this.setState({justTouched: ""})
+        if (this.state.justTouched === str) {
+          this.setState({ justTouched: "" });
+        }
       }, 800)
     }
   }

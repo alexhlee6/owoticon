@@ -56,6 +56,7 @@ export const styles = StyleSheet.create({
     minWidth: "100%",
     maxWidth: "100%",
     minHeight: 20,
-    textAlign: "center"
+    textAlign: "center",
+    paddingVertical: 5
   }
 });
