@@ -17,7 +17,6 @@ Select a mood category, and either tap to copy an emoticon to your clipboard or 
 
 <br />
 <br />
-<br />
 
 <p align="center">
   <img src="./assets/images/README/demo.gif" width="27%" style="margin:20px;" align="center" />
