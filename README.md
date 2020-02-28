@@ -7,15 +7,15 @@ A simple IOS/Android application where users can quickly find cute emoticon text
 Emoticons are divided into "mood" categories, and tapping a single emoticon saves that selection to the user's clipboard. 
 
 *Built using React Native.*
-
-<br />
 <br />
 
 
 <h2 align="center">Live Demo</h2>
+<br />
+
+Select a mood category, and either tap to copy an emoticon to your clipboard or hold down the emoticon to open the share panel and send in a message or post directly from the app.
 
 <br />
-Select a mood category, and either tap to copy an emoticon to your clipboard or hold down the emoticon to open the share panel and send in a message or post directly from the app.
 <br />
 <br />
 
