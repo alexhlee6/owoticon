@@ -25,12 +25,13 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "dev.alexhlee.owoticonApp",
-      "buildNumber": "1.0.1",
+      "buildNumber": "1.0.2",
       "backgroundColor": "#ffffff"
     },
     "android": {
       "package": "dev.alexhlee.owoticonApp",
       "versionCode": 1
-    }
+    },
+    "description": ""
   }
 }
