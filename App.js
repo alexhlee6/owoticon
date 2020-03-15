@@ -9,6 +9,7 @@ import { Asset } from 'expo-asset';
 import DrawerContent from "./components/DrawerContent";
 import Header from "./components/Header";
 import HomeScreen from "./components/screens/HomeScreen";
+import MainNav from "./components/navs/MainNav.js";
 import MoodScreen from "./components/screens/MoodScreen";
 
 const Drawer = createDrawerNavigator();
@@ -41,11 +42,12 @@ export default class App extends React.Component {
     return (
       <NavigationContainer>
         <Header />
-
+        <MainNav />
+{/* 
         <Stack.Navigator>
           <Stack.Screen name="Home" component={HomeScreen} options={styles.options} />
           <Stack.Screen name="Mood" component={MoodScreen} options={styles.options} />
-        </Stack.Navigator>
+        </Stack.Navigator> */}
 
       </NavigationContainer>
     );
