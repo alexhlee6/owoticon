@@ -8,7 +8,6 @@ import Menu from "./util/FaveMenu";
 class MoodScreen extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
     this.navigation = props.navigation;
     let moodName = props.route.params.name;
     this.state = {
