@@ -1,17 +1,21 @@
 import React from "react";
-import { ScrollView, Text, View, Clipboard, TouchableOpacity, Share, Vibration } from 'react-native';
+import { ScrollView, Text, View, Clipboard, TouchableOpacity, Dimensions } from 'react-native';
 import { EMOTES, styles } from "./util/MoodUtil";
 import * as Haptics from 'expo-haptics';
+import Menu from "./util/FaveMenu";
+
 
 class MoodScreen extends React.Component {
   constructor(props) {
     super(props);
+    console.log(props);
     this.navigation = props.navigation;
     let moodName = props.route.params.name;
     this.state = {
       moodName,
       filePath: `./util/emotes/${moodName}.txt`,
-      justTouched: ""
+      justTouched: "",
+      menuOpen: false
     }
     props.navigation.setOptions({title: moodName});
     this.handleTouch = this.handleTouch.bind(this);
@@ -39,7 +43,7 @@ class MoodScreen extends React.Component {
 
   handleTouch(str) {
     return () => {
-      Haptics.selectionAsync(Haptics.ImpactFeedbackStyle.Medium);
+      Haptics.selectionAsync(Haptics.ImpactFeedbackStyle.Heavy);
       Clipboard.setString(str);
       this.setState({justTouched: str});
       setTimeout(() => {
@@ -54,27 +58,28 @@ class MoodScreen extends React.Component {
     return async () => {
       try {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-        await Share.share({
-          message: str
-        }, {
-          excludedActivityTypes: [
-            "com.apple.UIKit.activity.PostToWeibo",
-            "com.apple.UIKit.activity.Mail",
-            "com.apple.UIKit.activity.Print",
-            "com.apple.UIKit.activity.AssignToContact",
-            "com.apple.UIKit.activity.SaveToCameraRoll",
-            "com.apple.UIKit.activity.AddToReadingList",
-            "com.apple.UIKit.activity.PostToFlickr",
-            "com.apple.UIKit.activity.PostToVimeo",
-            "com.apple.UIKit.activity.PostToTencentWeibo",
-            "com.apple.UIKit.activity.AirDrop",
-            "com.apple.UIKit.activity.OpenInIBooks",
-            "com.apple.UIKit.activity.MarkupAsPDF",
-            "com.apple.reminders.RemindersEditorExtension",
-            "com.apple.mobilenotes.SharingExtension",
-            "com.apple.mobileslideshow.StreamShareService",
-          ]
-        });
+        this.setState({menuOpen: true});
+        // await Share.share({
+        //   message: str
+        // }, {
+        //   excludedActivityTypes: [
+        //     "com.apple.UIKit.activity.PostToWeibo",
+        //     "com.apple.UIKit.activity.Mail",
+        //     "com.apple.UIKit.activity.Print",
+        //     "com.apple.UIKit.activity.AssignToContact",
+        //     "com.apple.UIKit.activity.SaveToCameraRoll",
+        //     "com.apple.UIKit.activity.AddToReadingList",
+        //     "com.apple.UIKit.activity.PostToFlickr",
+        //     "com.apple.UIKit.activity.PostToVimeo",
+        //     "com.apple.UIKit.activity.PostToTencentWeibo",
+        //     "com.apple.UIKit.activity.AirDrop",
+        //     "com.apple.UIKit.activity.OpenInIBooks",
+        //     "com.apple.UIKit.activity.MarkupAsPDF",
+        //     "com.apple.reminders.RemindersEditorExtension",
+        //     "com.apple.mobilenotes.SharingExtension",
+        //     "com.apple.mobileslideshow.StreamShareService",
+        //   ]
+        // });
       } catch (error) {
         console.log(error.message);
       }
@@ -94,11 +99,16 @@ class MoodScreen extends React.Component {
     ));
 
     return (
-      <ScrollView>
+      // <View style={{ flexGrow: 1, backgroundColor:"pink" }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}>
         <View style={styles.main}>
+          
           { emotes }
+          {/* {this.state.menuOpen && <Menu />} */}
         </View>
+        {this.state.menuOpen && <Menu />}
       </ScrollView>
+      // </View>
     )
   }
 }

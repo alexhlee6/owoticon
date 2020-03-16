@@ -2,19 +2,21 @@ import React from "react";
 import HomeScreen from "../screens/HomeScreen";
 import MoodScreen from "../screens/MoodScreen";
 import { createStackNavigator } from '@react-navigation/stack';
+import { View } from "react-native";
 const Stack = createStackNavigator();
 
+
+
 export default () => {
+ 
   return (
+    <View style={{height: "100%", width: "100%"}}>
     <Stack.Navigator>
-      <Stack.Screen name="Home" component={HomeScreen} options={ styles.options
-        // Object.assign({}, styles.options, {headerShown: false})
-      } 
-        
-      />
+      <Stack.Screen name="Home" component={HomeScreen} options={ styles.options } />
       <Stack.Screen name="Mood" component={MoodScreen} options={styles.options} />
     </Stack.Navigator>
-  )
+    </View>
+  );
 }
 
 

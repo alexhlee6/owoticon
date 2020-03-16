@@ -1,19 +1,13 @@
 import 'react-native-gesture-handler';
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createStackNavigator } from '@react-navigation/stack';
 import { AppLoading } from "expo";
 import { Asset } from 'expo-asset';
+import { View, Dimensions } from "react-native";
 
-import DrawerContent from "./components/DrawerContent";
 import Header from "./components/Header";
-import HomeScreen from "./components/screens/HomeScreen";
 import MainNav from "./components/navs/MainNav.js";
-import MoodScreen from "./components/screens/MoodScreen";
 
-const Drawer = createDrawerNavigator();
-const Stack = createStackNavigator();
 
 export default class App extends React.Component {
   state = {
@@ -40,28 +34,15 @@ export default class App extends React.Component {
       );
     }
     return (
-      <NavigationContainer>
-        <Header />
-        <MainNav />
-{/* 
-        <Stack.Navigator>
-          <Stack.Screen name="Home" component={HomeScreen} options={styles.options} />
-          <Stack.Screen name="Mood" component={MoodScreen} options={styles.options} />
-        </Stack.Navigator> */}
-
-      </NavigationContainer>
+        <NavigationContainer>
+          <View style={{
+            height: Dimensions.get("window").height, position: "relative", 
+            flex: 1, justifyContent: "center"
+          }}>
+            <Header />
+            <MainNav />
+          </View>
+        </NavigationContainer>
     );
   }
 }
-
-const styles = {
-  options: {
-    headerStyle: {
-      backgroundColor: "white"
-    },
-    headerTitleStyle: {
-      color: "#facbc8"
-    },
-    headerTintColor: "#fcddd9"
-  }
-};
