@@ -22,16 +22,18 @@ export const getEmoteWidth = () => {
 export const styles = StyleSheet.create({
   main: {
     flex: 1,
+    height: "100%",
+    width: "100%",
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingVertical: 15
+    paddingVertical: 15,
   },
   emoteBackground: {
     backgroundColor: "white",
-    width: getEmoteWidth(),
+    width: 175,
     height: 50,
     paddingHorizontal: 20,
     paddingVertical: 10,
@@ -41,7 +43,8 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#facbc8",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    position: "relative"
   },
   emoteText: {
     color: "gray",
@@ -58,5 +61,18 @@ export const styles = StyleSheet.create({
     minHeight: 20,
     textAlign: "center",
     paddingVertical: 5
+  },
+  favoriteButton: {
+    width: 35, 
+    height: 35,
+    borderRadius: 50, 
+    zIndex: 5,
+    backgroundColor: "white",
+    borderColor: "#fcddd9", 
+    borderWidth: 1.5,
+    justifyContent: "center", 
+    alignItems: "center",
+    position: "absolute", 
+    bottom: 20
   }
 });

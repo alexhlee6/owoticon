@@ -30,19 +30,19 @@ class Menu extends React.Component {
 
   render() {
     return (
-      <View style={{ 
-        position: "absolute", zIndex: 50, top: 0, bottom: 0, left: 0, right: 0,
-        alignSelf: "flex-start",
-        alignItems: "center", justifyContent: "center",
-        backgroundColor: 'rgba(255, 255, 255, 0.3)'
-      }}>
+      // <View style={{ 
+      //   position: "absolute", zIndex: 50, top: 0, bottom: 0, left: 0, right: 0,
+      //   alignSelf: "flex-start",
+      //   alignItems: "center", justifyContent: "center",
+      //   backgroundColor: 'rgba(255, 255, 255, 0.3)'
+      // }}>
         <Animated.View style={{
           width: 275, height: 200, backgroundColor: "white",
           transform: [{ scale: this.state.springValue }]
         }}>
           <Text>Menu</Text>
         </Animated.View>
-      </View>
+      // </View>
     )
   }
 
