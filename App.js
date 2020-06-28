@@ -5,6 +5,12 @@ import { AppLoading } from "expo";
 import { Asset } from 'expo-asset';
 import { View, Dimensions } from "react-native";
 
+// Redux:
+import { Provider } from 'react-redux';
+import configureStore from './redux/store/store';
+const store = configureStore();
+
+// Components:
 import Header from "./components/Header";
 import MainNav from "./components/navs/MainNav.js";
 
@@ -34,6 +40,7 @@ export default class App extends React.Component {
       );
     }
     return (
+      <Provider store={ store }>
         <NavigationContainer>
           <View style={{
             height: Dimensions.get("window").height, position: "relative", 
@@ -43,6 +50,7 @@ export default class App extends React.Component {
             <MainNav />
           </View>
         </NavigationContainer>
+      </Provider>
     );
   }
 }
