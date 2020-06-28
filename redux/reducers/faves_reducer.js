@@ -7,9 +7,6 @@ const favesReducer = (state = {}, action) => {
     case RECEIVE_FAVES:
       console.log("RECEIVE_FAVES:", action.faves);
       return action.faves;
-
-    
-    
     default:
       return state;
   }
