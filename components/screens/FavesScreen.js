@@ -17,7 +17,7 @@ const mDTP = (dispatch) => {
 
 import React from "react";
 import { 
-  ScrollView, Text, View, Clipboard, TouchableWithoutFeedback, TouchableOpacity 
+  ScrollView, Text, View, Clipboard, TouchableWithoutFeedback, TouchableOpacity, Share
 } from 'react-native';
 
 import styles from '../styles/EmoteListStyles';
@@ -169,39 +169,40 @@ class FavesScreen extends React.Component {
       
       const favesIcon = (
         this.state.faves[emoteName] ? (
-        <TouchableOpacity 
-          style={ buttonStyle }
-          onPress={ this.removeFromFaves(emoteName) }
-        >
-          <FAIcon name="heart" color="#fcddd9" size={18}
-            style={{ paddingTop: 3 }}
-          />
-        </TouchableOpacity>
-      ) 
-        : (
           <TouchableOpacity 
-            style={buttonStyle}
-            onPress={this.addToFaves(emoteName, str)}
+            style={ buttonStyle }
+            onPress={ this.removeFromFaves(emoteName) }
           >
-            <FAIcon name="heart-o" color="#fcddd9" size={18}
+            <FAIcon name="heart" color="#fcddd9" size={18}
               style={{ paddingTop: 3 }}
             />
           </TouchableOpacity>
+        ) : (
+            <TouchableOpacity 
+              style={buttonStyle}
+              onPress={this.addToFaves(emoteName, str)}
+            >
+              <FAIcon name="heart-o" color="#fcddd9" size={18}
+                style={{ paddingTop: 3 }}
+              />
+            </TouchableOpacity>
         )
       );
 
       return (
-        <TouchableOpacity key={i} 
-          onPress={this.handleTouch(str)} onLongPress={this.handleLongPress(str)}
-        >
-          <View style={styles.emoteBackground}>
-          { this.state.justTouched === str ? <Text style={styles.copiedText}>Copied!</Text> : null }
-          { this.state.editing && favesIcon }
-          <Text key={i} style={styles.emoteText}>
-            {str}
-          </Text>
-          </View>
-        </TouchableOpacity>
+        <View key={`container-${i}`} style={ styles.emoteContainer }>
+          <TouchableOpacity key={i} 
+            onPress={this.handleTouch(str)} onLongPress={this.handleLongPress(str)}
+          >
+            <View style={styles.emoteBackground}>
+            { this.state.justTouched === str ? <Text style={styles.copiedText}>Copied!</Text> : null }
+            { this.state.editing && favesIcon }
+            <Text key={i} style={styles.emoteText}>
+              {str}
+            </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       );
     });
 

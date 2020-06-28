@@ -17,11 +17,12 @@ const mDTP = (dispatch) => {
 
 import React from "react";
 import { 
-  ScrollView, Text, View, Clipboard, TouchableWithoutFeedback, TouchableOpacity 
+  ScrollView, Text, View, Clipboard, TouchableWithoutFeedback, TouchableOpacity, Share
 } from 'react-native';
 
 
-import { EMOTES, styles } from "./util/MoodUtil";
+import { EMOTES } from "./util/MoodUtil";
+import styles from '../styles/EmoteListStyles';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import OcticonsIcon from 'react-native-vector-icons/Octicons';
 import * as Haptics from 'expo-haptics';
@@ -216,17 +217,19 @@ class MoodScreen extends React.Component {
       );
 
       return (
-        <TouchableOpacity key={i} 
-          onPress={this.handleTouch(str)} onLongPress={this.handleLongPress(str)}
-        >
-          <View style={styles.emoteBackground}>
-          { this.state.justTouched === str ? <Text style={styles.copiedText}>Copied!</Text> : null }
-          { this.state.editing && favesIcon }
-          <Text key={i} style={styles.emoteText}>
-            {str}
-          </Text>
-          </View>
-        </TouchableOpacity>
+        <View key={`container-${i}`} style={ styles.emoteContainer }>
+          <TouchableOpacity key={i} 
+            onPress={this.handleTouch(str)} onLongPress={this.handleLongPress(str)}
+          >
+            <View style={styles.emoteBackground}>
+            { this.state.justTouched === str ? <Text style={styles.copiedText}>Copied!</Text> : null }
+            { this.state.editing && favesIcon }
+            <Text key={i} style={styles.emoteText}>
+              {str}
+            </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       );
     });
 

@@ -8,10 +8,15 @@ export default StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 15,
+  },
+  emoteContainer: {
+    width: "50%", 
+    height: 60, 
+    justifyContent: "center", 
+    alignItems: "center"
   },
   emoteBackground: {
     backgroundColor: "white",
