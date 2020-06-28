@@ -5,6 +5,7 @@ import { AppLoading } from "expo";
 import { Asset } from 'expo-asset';
 import { View, Dimensions } from "react-native";
 
+
 // Redux:
 import { Provider } from 'react-redux';
 import configureStore from './redux/store/store';
@@ -16,6 +17,7 @@ import MainNav from "./components/navs/MainNav.js";
 
 
 export default class App extends React.Component {
+
   state = {
     isReady: false
   }

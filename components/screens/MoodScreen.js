@@ -37,7 +37,6 @@ class MoodScreen extends React.Component {
 
   componentDidUpdate() {
     let newState = { faves: this.state.faves, favesPos: this.state.favesPos };
-    console.log(newState);
   }
 
   addToFaves = (key, str) => {
@@ -171,7 +170,7 @@ class MoodScreen extends React.Component {
       buttonStyle.right = rightPos;
 
       const emoteName = this.state.moodName.toLowerCase() + "-" + i;
-      // console.log(emoteName);
+      
       const favesIcon = (
         this.state.faves[emoteName] ? (
         <TouchableOpacity 
