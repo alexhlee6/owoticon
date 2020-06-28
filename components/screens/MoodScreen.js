@@ -1,10 +1,33 @@
+import { connect } from 'react-redux';
+import { getAllFaves, addFave, deleteFave } from '../../redux/actions/fave_actions';
+
+const mSTP = (state, ownProps) => {
+  return {
+    faves: state.faves.faves,
+    favesPos: state.faves.favesPos
+  }
+}
+const mDTP = (dispatch) => {
+  return {
+    getAllFaves: () => dispatch(getAllFaves()),
+    addFave: (key, val) => dispatch(addFave(key, val)),
+    deleteFave: (faveKey) => dispatch(deleteFave(faveKey))
+  }
+}
+
 import React from "react";
-import { ScrollView, Text, View, Clipboard, TouchableWithoutFeedback, TouchableOpacity, AsyncStorage } from 'react-native';
+import { 
+  ScrollView, Text, View, Clipboard, TouchableWithoutFeedback, TouchableOpacity 
+} from 'react-native';
+
+
 import { EMOTES, styles } from "./util/MoodUtil";
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import OcticonsIcon from 'react-native-vector-icons/Octicons';
 import * as Haptics from 'expo-haptics';
-import MyStorage from "./util/storageUtil";
+
+
+
 
 class MoodScreen extends React.Component {
   constructor(props) {
@@ -19,39 +42,28 @@ class MoodScreen extends React.Component {
       menuOpen: false,
       editing: false,
       emotes: EMOTES[moodName],
-      faves: {},
-      favesPos: []
+      faves: this.props.faves,
+      favesPos: this.props.favesPos
     }
     this.renderEditButton();
     this.handleTouch = this.handleTouch.bind(this);
   }
 
   componentDidMount() {
-    // MyStorage.deleteAllData();
-    MyStorage.retrieveAllData().then(data => {
-      if (data) {
-        this.setState({faves: data.faves, favesPos: data.favesPos});
-      } 
-    }).catch(err => console.log(err));
-  }
-
-  componentDidUpdate() {
-    let newState = { faves: this.state.faves, favesPos: this.state.favesPos };
+    
   }
 
   addToFaves = (key, str) => {
     return () => {
-      MyStorage.storeOne(key, str).then(data => {
-        this.setState({ faves: data.faves, favesPos: data.favesPos });
-      });
+      this.props.addFave(key, str)
+        .then(() => this.setState({ faves: this.props.faves, favesPos: this.props.favesPos }));
     }
   }
 
   removeFromFaves = (key) => {
     return () => {
-      MyStorage.deleteOne(key).then(data => {
-        this.setState({ faves: data.faves, favesPos: data.favesPos });
-      });
+      this.props.deleteFave(key)
+        .then(() => this.setState({ faves: this.props.faves, favesPos: this.props.favesPos }));
     }
   }
 
@@ -220,4 +232,4 @@ class MoodScreen extends React.Component {
 }
 
 
-export default MoodScreen;
+export default connect(mSTP, mDTP)(MoodScreen);
