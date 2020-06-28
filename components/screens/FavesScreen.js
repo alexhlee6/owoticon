@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getAllFaves } from '../../redux/actions/fave_actions';
+import { getAllFaves, addFave, deleteFave } from '../../redux/actions/fave_actions';
 
 const mSTP = (state, ownProps) => {
   return {
@@ -43,6 +43,15 @@ class FavesScreen extends React.Component {
 
   componentDidMount() {
     //this.props.getAllFaves()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      this.setState({
+        faves: this.props.faves,
+        favesPos: this.props.favesPos
+      });
+    }
   }
 
   addToFaves = (key, str) => {

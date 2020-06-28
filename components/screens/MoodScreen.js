@@ -52,6 +52,15 @@ class MoodScreen extends React.Component {
   componentDidMount() {
     
   }
+  
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      this.setState({
+        faves: this.props.faves,
+        favesPos: this.props.favesPos
+      });
+    }
+  }
 
   addToFaves = (key, str) => {
     return () => {
