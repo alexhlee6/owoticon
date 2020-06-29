@@ -19,11 +19,13 @@ import React from "react";
 import { 
   ScrollView, Text, View, Clipboard, TouchableWithoutFeedback, TouchableOpacity, Share
 } from 'react-native';
+import FavesListDraggable from './util/FavesListDraggable';
 
 import styles from '../styles/EmoteListStyles';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import OcticonsIcon from 'react-native-vector-icons/Octicons';
 import * as Haptics from 'expo-haptics';
+
 
 class FavesScreen extends React.Component {
   constructor(props) {
@@ -87,7 +89,7 @@ class FavesScreen extends React.Component {
             style={{ position: "relative" }}
             onPress={this.handleEditButtonPress}
           >
-            <FAIcon name="heart-o" color="#fcddd9" size={29}
+            {/* <FAIcon name="heart-o" color="#fcddd9" size={29}
               style={{ marginRight: 14 }}
             />
             <OcticonsIcon name="plus" color="#fcddd9" size={14}
@@ -95,7 +97,10 @@ class FavesScreen extends React.Component {
                 marginRight: 14, position: "absolute", zIndex: 5, bottom: 10,
                 left: 15
               }}
-            />
+            /> */}
+            <Text onPress={this.handleEditButtonPress} style = {
+              { color: "#fcddd9", fontSize: 15, marginRight: 14, fontWeight: "600" }
+            }>EDIT</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
@@ -157,6 +162,9 @@ class FavesScreen extends React.Component {
   }
 
   render() {
+    if(this.state.editing) {
+      return <FavesListDraggable navigation={this.props.navigation} />
+    }
     const emotesArray = [];
     this.state.favesPos.map(key => emotesArray.push(this.state.faves[key]));
 
@@ -195,11 +203,11 @@ class FavesScreen extends React.Component {
             onPress={this.handleTouch(str)} onLongPress={this.handleLongPress(str)}
           >
             <View style={styles.emoteBackground}>
-            { this.state.justTouched === str ? <Text style={styles.copiedText}>Copied!</Text> : null }
-            { this.state.editing && favesIcon }
-            <Text key={i} style={styles.emoteText}>
-              {str}
-            </Text>
+              { this.state.justTouched === str ? <Text style={styles.copiedText}>Copied!</Text> : null }
+              { this.state.editing && favesIcon }
+              <Text key={i} style={styles.emoteText}>
+                {str}
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
