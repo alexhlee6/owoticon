@@ -11,6 +11,30 @@ export const storeAllData = async (faves, favesPos) => {
   return newData;
 };
 
+// export const updateFaveData = async (favesArr) => {
+//   const newFaves = JSON.stringify(favesArr);
+//   try {
+//     await AsyncStorage.setItem(
+//       '@owoticon:faves', newFaves
+//     );
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+// export const retrieveFaveData = async () => {
+//   try {
+//     const faves = await AsyncStorage.getItem('@owoticon:faves');
+//     if (faves) {
+//       console.log(faves);
+//       return JSON.parse(faves);
+//     } else {
+//       return [];
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   }
+  
+// }
 
 // Root Storage: Retrieve All 
 // returns { faves: {}, favesPos: [] }
@@ -54,6 +78,17 @@ export const storeOne = async (key, val) => {
 
   const newData = await storeAllData(allData["faves"], allData["favesPos"])
     .then(data => data);
+  return newData;
+}
+
+// Update Fave Order  (save favesPos array)
+export const updateFaveOrder = async (newFavesPos) => {
+  let allData = await retrieveAllData().then(data => data);
+  let dupFaves = allData["faves"];
+
+  const newData = await storeAllData(dupFaves, newFavesPos)
+    .then(data => data)
+    .catch(err => console.log(err));
   return newData;
 }
 

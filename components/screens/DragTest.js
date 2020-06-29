@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getAllFaves, addFave, deleteFave } from '../../redux/actions/fave_actions';
+import { getAllFaves, addFave, deleteFave, updateFaveOrder } from '../../redux/actions/fave_actions';
 
 const mSTP = (state, ownProps) => {
   return {
@@ -11,7 +11,8 @@ const mDTP = (dispatch) => {
   return {
     getAllFaves: () => dispatch(getAllFaves()),
     addFave: (key, val) => dispatch(addFave(key, val)),
-    deleteFave: (faveKey) => dispatch(deleteFave(faveKey))
+    deleteFave: (faveKey) => dispatch(deleteFave(faveKey)),
+    updateFaveOrder: (favesPos) => dispatch(updateFaveOrder(favesPos))
   }
 }
 
@@ -42,9 +43,9 @@ class DragTestScreen extends React.Component {
   constructor(props) {
     super(props);
     
-    let data = [];
+    let orderedFaves = [];
     props.favesPos.forEach(key => {
-      data.push({ key, name: props.faves[key] })
+      orderedFaves.push({ key, text: props.faves[key] })
     });
 
     this.state = {
@@ -54,7 +55,7 @@ class DragTestScreen extends React.Component {
       editing: false,
       faves: props.faves,
       favesPos: props.favesPos,
-      data
+      orderedFaves
     }
     this.renderEditButton();
     this.handleTouch = this.handleTouch.bind(this);
@@ -66,9 +67,14 @@ class DragTestScreen extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
+      let orderedFaves = [];
+      this.props.favesPos.forEach(key => {
+        orderedFaves.push({ key, text: this.props.faves[key] })
+      });
       this.setState({
         faves: this.props.faves,
-        favesPos: this.props.favesPos
+        favesPos: this.props.favesPos,
+        orderedFaves
       });
     }
   }
@@ -85,6 +91,15 @@ class DragTestScreen extends React.Component {
       this.props.deleteFave(key)
         .then(() => this.setState({ faves: this.props.faves, favesPos: this.props.favesPos }));
     }
+  }
+
+  saveFavesOrder = (newOrderedFaves) => {
+    let newFavesPos = [];
+    newOrderedFaves.forEach(item => {
+      newFavesPos.push(item.key);
+    });
+    this.props.updateFaveOrder(newFavesPos);
+      // .then(() => this.setState({ faves: this.props.faves, favesPos: this.props.favesPos }));
   }
 
   handleEditButtonPress = () => {
@@ -263,7 +278,7 @@ class DragTestScreen extends React.Component {
         style={styling.item}
         key={item.key}
       >
-        <Text style={styling.item_text}>{item.name}</Text>
+        <Text style={styling.item_text}>{item.text}</Text>
       </View>
     )
   }
@@ -275,28 +290,16 @@ class DragTestScreen extends React.Component {
           numColumns={2}
           renderItem={this.renderItem}
           itemHeight={60}
-          data={this.state.data}
-          onDragRelease={(data) => {
-            console.log(data);
-            this.setState({data});// need reset the props data sort after drag release
+          data={this.state.orderedFaves}
+          onDragRelease={(orderedFaves) => {
+            console.log(orderedFaves);
+            this.saveFavesOrder(orderedFaves);
+            this.setState({orderedFaves});// need reset the props data sort after drag release
           }}
         />
       </View>
     );
   }
- 
-  // render() {
-  //   return (
-  //     <View style={{ flex: 1, backgroundColor: "pink", flexDirection: "row" }}>
-  //       <DraggableFlatList
-  //         data={this.state.data}
-  //         renderItem={this.renderItem}
-  //         keyExtractor={(item, index) => `draggable-item-${item.key}`}
-  //         onDragEnd={({ data }) => this.setState({ data })}
-  //       />
-  //     </View>
-  //   );
-  // }
 }
 
 
