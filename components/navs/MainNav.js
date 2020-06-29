@@ -1,8 +1,12 @@
 import React from "react";
 import HomeNav from "./HomeNav";
 import FavesScreen from "./FavesNav";
+
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
+// TEST:
+import DragTestNav from './DragTestNav';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -26,6 +30,13 @@ export default () => {
           <Icon name="heart" color={color} size={20} />
         ),
       }} />
+      <Tab.Screen name="DragTest" component={DragTestNav} options={{
+        tabBarLabel: 'DragTest',
+        tabBarIcon: ({ color }) => (
+          <Icon name="heart" color={color} size={20} />
+        ),
+      }} />
+
     </Tab.Navigator>
   );
 }
