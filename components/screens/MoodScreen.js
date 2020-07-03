@@ -20,7 +20,6 @@ import {
   ScrollView, Text, View, Clipboard, TouchableWithoutFeedback, TouchableOpacity, Share,
   Button
 } from 'react-native';
-import Modal from 'react-native-modal';
 
 import { EMOTES } from "./util/MoodUtil";
 import styles from '../styles/EmoteListStyles';
@@ -46,11 +45,6 @@ class MoodScreen extends React.Component {
       emotes: EMOTES[moodName],
       faves: this.props.faves,
       orderedFaves: this.props.orderedFaves,
-      isModalVisible: false,
-      modalData: {
-        key: "",
-        str: ""
-      }
     }
     this.renderEditButton();
     this.handleTouch = this.handleTouch.bind(this);
@@ -71,6 +65,7 @@ class MoodScreen extends React.Component {
 
   addToFaves = (key, str) => {
     return () => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       this.props.addFave(key, str)
         .then(() => this.setState({ faves: this.props.faves, orderedFaves: this.props.orderedFaves }));
     }
@@ -78,12 +73,14 @@ class MoodScreen extends React.Component {
 
   removeFromFaves = (key) => {
     return () => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       this.props.deleteFave(key)
         .then(() => this.setState({ faves: this.props.faves, orderedFaves: this.props.orderedFaves }));
     }
   }
 
   handleEditButtonPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     if (this.state.editing) {
       this.setState({ editing: false });
       this.renderEditButton();
@@ -102,10 +99,10 @@ class MoodScreen extends React.Component {
             style={{ position: "relative" }}
             onPress={this.handleEditButtonPress}
           >
-            <FAIcon name="heart-o" color="#fcddd9" size={29}
+            <FAIcon name="heart-o" color="#ffd4cf" size={29}
               style={{ marginRight: 14 }}
             />
-            <OcticonsIcon name="plus" color="#fcddd9" size={14}
+            <OcticonsIcon name="plus" color="#ffd4cf" size={14}
               style={{
                 marginRight: 14, position: "absolute", zIndex: 5, bottom: 10,
                 left: 15
@@ -118,7 +115,7 @@ class MoodScreen extends React.Component {
             onPress={this.handleEditButtonPress}
           >
             <Text onPress={this.handleEditButtonPress} style = {
-              { color: "#fcddd9", fontSize: 15, marginRight: 14, fontWeight: "600" }
+              { color: "#ffd4cf", fontSize: 15, marginRight: 14, fontWeight: "600" }
             }>DONE</Text>
           </TouchableOpacity>
         )
@@ -144,7 +141,7 @@ class MoodScreen extends React.Component {
 
   handleTouch(str) {
     return () => {
-      Haptics.selectionAsync(Haptics.ImpactFeedbackStyle.Heavy);
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
       Clipboard.setString(str);
       this.setState({justTouched: str});
       setTimeout(() => {
@@ -155,111 +152,35 @@ class MoodScreen extends React.Component {
     }
   }
 
-
-
-  // handleLongPress(emoteKey, emoteStr) {
-  //   return () => {
-  //     this.openModal(emoteKey, emoteStr);
-  //     // try {
-  //     //   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-  //     //   this.setState({ justLongPressed: str, menuOpen: true});
-  //     //   await Share.share({
-  //     //     message: str
-  //     //   }, {
-  //     //     excludedActivityTypes: [
-  //     //       "com.apple.UIKit.activity.PostToWeibo",
-  //     //       "com.apple.UIKit.activity.Mail",
-  //     //       "com.apple.UIKit.activity.Print",
-  //     //       "com.apple.UIKit.activity.AssignToContact",
-  //     //       "com.apple.UIKit.activity.SaveToCameraRoll",
-  //     //       "com.apple.UIKit.activity.AddToReadingList",
-  //     //       "com.apple.UIKit.activity.PostToFlickr",
-  //     //       "com.apple.UIKit.activity.PostToVimeo",
-  //     //       "com.apple.UIKit.activity.PostToTencentWeibo",
-  //     //       "com.apple.UIKit.activity.AirDrop",
-  //     //       "com.apple.UIKit.activity.OpenInIBooks",
-  //     //       "com.apple.UIKit.activity.MarkupAsPDF",
-  //     //       "com.apple.reminders.RemindersEditorExtension",
-  //     //       "com.apple.mobilenotes.SharingExtension",
-  //     //       "com.apple.mobileslideshow.StreamShareService",
-  //     //     ]
-  //     //   });
-  //     // } catch (error) {
-  //     //   console.log(error.message);
-  //     // }
-  //   }
-  // }
-
-  openModal = (emoteKey, emoteStr) => {
-    return () => {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-      this.setState({ isModalVisible: true, modalData: { key: emoteKey, str: emoteStr }});
-    }
-  }
-
-  closeModal = () => {
-    this.setState({ isModalVisible: false, modalData: { key: "", str: "" } });
-  }
-
-  toggleModal = () => {
-    this.setState({isModalVisible: !this.state.isModalVisible});
-  };
-
-  openShareMenu = async (str) => {
-    
-    try {
-      // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-      this.setState({ justLongPressed: str, menuOpen: true });
-      
-      // let closeModal = this.closeModal;
-
-      const result = await Share.share({
-        message: str
-      }, {
-        excludedActivityTypes: [
-          "com.apple.UIKit.activity.PostToWeibo",
-          "com.apple.UIKit.activity.Mail",
-          "com.apple.UIKit.activity.Print",
-          "com.apple.UIKit.activity.AssignToContact",
-          "com.apple.UIKit.activity.SaveToCameraRoll",
-          "com.apple.UIKit.activity.AddToReadingList",
-          "com.apple.UIKit.activity.PostToFlickr",
-          "com.apple.UIKit.activity.PostToVimeo",
-          "com.apple.UIKit.activity.PostToTencentWeibo",
-          "com.apple.UIKit.activity.AirDrop",
-          "com.apple.UIKit.activity.OpenInIBooks",
-          "com.apple.UIKit.activity.MarkupAsPDF",
-          "com.apple.reminders.RemindersEditorExtension",
-          "com.apple.mobilenotes.SharingExtension",
-          "com.apple.mobileslideshow.StreamShareService",
-        ]
-      });
-      console.log(result);
-      if (result.action === Share.sharedAction) {
-        if (result) {
-          this.closeModal();
-          // shared with activity type of result.activityType
-        } else {
-          this.closeModal();
-          // shared
-        }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
+  handleMenuLongPress = (str) => {
+    return async () => {
+      try {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+        this.setState({ justLongPressed: str, menuOpen: true});
+        await Share.share({
+          message: str
+        }, {
+          excludedActivityTypes: [
+            "com.apple.UIKit.activity.PostToWeibo",
+            "com.apple.UIKit.activity.Mail",
+            "com.apple.UIKit.activity.Print",
+            "com.apple.UIKit.activity.AssignToContact",
+            "com.apple.UIKit.activity.SaveToCameraRoll",
+            "com.apple.UIKit.activity.AddToReadingList",
+            "com.apple.UIKit.activity.PostToFlickr",
+            "com.apple.UIKit.activity.PostToVimeo",
+            "com.apple.UIKit.activity.PostToTencentWeibo",
+            "com.apple.UIKit.activity.AirDrop",
+            "com.apple.UIKit.activity.OpenInIBooks",
+            "com.apple.UIKit.activity.MarkupAsPDF",
+            "com.apple.reminders.RemindersEditorExtension",
+            "com.apple.mobilenotes.SharingExtension",
+            "com.apple.mobileslideshow.StreamShareService",
+          ]
+        });
+      } catch (error) {
+        console.log(error.message);
       }
-      //   .then((res) => {
-      //     console.log(res);
-      //     closeModal();
-          // if(action === Share.dismissedAction) {
-          //   this.setState({ justLongPressed: "", menuOpen: false, isModalVisible: false })
-          // } else {
-          //   this.setState({ justLongPressed: "", menuOpen: false, isModalVisible: false })
-          // }
-        // });
-        // this.closeModal();
-      // .then(() => this.setState({ justLongPressed: "", menuOpen: false, isModalVisible: false }));
-      // this.setState({ justLongPressed: "", menuOpen: false, isModalVisible: false });
-    } catch (error) {
-      console.log(error.message);
     }
   }
 
@@ -275,34 +196,49 @@ class MoodScreen extends React.Component {
       
       const favesIcon = (
         this.state.faves[emoteName] ? (
-        <TouchableOpacity 
-          style={ buttonStyle }
+        <TouchableWithoutFeedback 
           onPress={ this.removeFromFaves(emoteName) }
         >
-          <FAIcon name="heart" color="#fcddd9" size={18}
+          <View style={ buttonStyle }>
+          <FAIcon name="heart" color="#ffd4cf" size={18}
             style={{ paddingTop: 3 }}
           />
-        </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
       ) 
         : (
-          <TouchableOpacity 
-            style={buttonStyle}
+          <TouchableWithoutFeedback 
             onPress={this.addToFaves(emoteName, str)}
           >
-            <FAIcon name="heart-o" color="#fcddd9" size={18}
-              style={{ paddingTop: 3 }}
-            />
-          </TouchableOpacity>
+            <View style={buttonStyle}>
+              <FAIcon name="heart-o" color="#ffd4cf" size={18}
+                style={{ paddingTop: 3 }}
+              />
+            </View>
+          </TouchableWithoutFeedback>
         )
       );
+
+      if (this.state.editing) {
+        return (
+          <View key={`container-${i}`} style={ styles.emoteContainer }>
+            <View style={styles.emoteBackground}>
+              { favesIcon }
+              <Text key={i} style={styles.emoteText}>
+                {str}
+              </Text>
+            </View>
+          </View>
+        );
+      }
 
       return (
         <View key={`container-${i}`} style={ styles.emoteContainer }>
           <TouchableOpacity key={i} 
-            onPress={this.handleTouch(str)} onLongPress={this.openModal(emoteName, str)}
+            onPress={this.handleTouch(str)} onLongPress={this.handleMenuLongPress(str)}
           >
             <View style={styles.emoteBackground}>
-            { (this.state.justTouched === str && !this.state.isModalVisible) ? <Text style={styles.copiedText}>Copied!</Text> : null }
+            { this.state.justTouched === str ? <Text style={styles.copiedText}>Copied!</Text> : null }
             { this.state.editing && favesIcon }
             <Text key={i} style={styles.emoteText}>
               {str}
@@ -315,84 +251,6 @@ class MoodScreen extends React.Component {
 
     return (
       <View style={{ flex: 1, paddingHorizontal: 0 }}>
-        {/* <View style={{ 
-          width: "100%", backgroundColor: "white", justifyContent: "center", alignItems: "flex-end",
-          paddingHorizontal: 30
-        }}>
-          <TouchableWithoutFeedback onPress={this.toggleModal}>
-            <Text style={{ color:"#facbc8", fontSize: 18, paddingVertical: 10 }}>Edit</Text>
-          </TouchableWithoutFeedback>
-        </View> */}
-
-        {/* MODAL CONTENT */}
-        <Modal 
-          isVisible={this.state.isModalVisible}
-          backdropColor="black"
-          // coverScreen={false}
-          backdropOpacity={0.3}
-          onBackdropPress={this.closeModal}
-          style={{flex: 1, alignItems: "center", justifyContent: "center"}}
-        >
-          {/* <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}> */}
-            <View style={{ 
-              backgroundColor: "white", width: "80%", height: 220, borderRadius: 10,
-              padding: 20, alignItems: "center", justifyContent: "space-between"
-            }}>
-              <View style={{
-                height: "40%", justifyContent: "center"
-              }}>
-                <TouchableOpacity 
-                  onPress={this.handleTouch(this.state.modalData.str)}
-                  style={Object.assign({},styles.emoteBackground, {borderColor: "transparent"})}
-                  // style={
-                  //   Object.assign({}, styles.emoteBackground, {
-                  //     borderColor: "#ffd9d4",
-                  //     backgroundColor: "#fcfcfc"
-                  //   })
-                  // }
-                >
-                  { this.state.justTouched === this.state.modalData.str && this.state.isModalVisible ? (
-                    <Text style={styles.copiedText}>Copied!</Text> 
-                  ) : null }
-                  <Text 
-                    style={{ 
-                      fontSize: 20, 
-                      width: "100%", 
-                      textAlign: "center", 
-                      color: "gray"
-                      // paddingVertical: 10,
-                    }}
-                  >
-                    { this.state.modalData.str }
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View>
-
-                { this.state.faves[this.state.modalData.key] ? (
-                  <Button 
-                    title="Remove from Favorites" 
-                    onPress={this.removeFromFaves(this.state.modalData.key)} 
-                    color="#ffc2ba"
-                  />
-                ) : (
-                  <Button 
-                    title="Add to Favorites" 
-                    onPress={
-                      this.addToFaves(this.state.modalData.key, this.state.modalData.str)
-                    } 
-                    color="#ffc2ba"
-                  />
-                ) }
-                <Button title="Share this Owoticon" onPress={() => this.openShareMenu(this.state.modalData.str)} color="#ffc2ba" />
-                <Button title="Close" onPress={this.closeModal} color="#ffc2ba" />
-              </View>
-              
-            </View>
-          {/* </View> */}
-        </Modal>
-      
-        {/* EMOTE LIST */}
         <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}>
           <View style={styles.main}>
             { emotes }

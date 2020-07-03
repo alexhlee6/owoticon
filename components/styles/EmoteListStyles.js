@@ -38,7 +38,7 @@ export default StyleSheet.create({
     fontSize: 20
   },
   copiedText: {
-    color: "lightpink",
+    color: "#ffc6bd",
     fontSize: 20,
     position: "absolute",
     zIndex: 3,

@@ -64,6 +64,7 @@ class FavesScreen extends React.Component {
 
   removeFromFaves = (key) => {
     return () => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
       this.props.deleteFave(key)
         .then(() => this.setState({ 
           faves: this.props.faves, orderedFaves: this.props.orderedFaves
@@ -76,19 +77,23 @@ class FavesScreen extends React.Component {
   }
 
   renderItem = (item) => {
-    
-
     if (this.state.editing) {
-      const buttonStyle = Object.assign({}, styles.favoriteButton);
-      buttonStyle.right = -5;
-      buttonStyle.backgroundColor = "#fcddd9";
-      buttonStyle.width = 26;
-      buttonStyle.height = 26;
-      buttonStyle.bottom = 29;
+      const buttonStyle = {
+        width: 27, 
+        height: 27,
+        borderRadius: 50, 
+        zIndex: 5,
+        backgroundColor: "#ffd4cf",
+        justifyContent: "center", 
+        alignItems: "center",
+        position: "absolute", 
+        bottom: 26,
+        right: -5
+      }
 
       const trashIcon = (
         <TouchableOpacity style={ buttonStyle } onPress={ this.removeFromFaves(item.key) }>
-          <FAIcon name="close" color="white" size={15} style={{ paddingTop: 0 }} />
+          <FAIcon name="close" color="white" size={16} style={{ paddingTop: 0 }} />
         </TouchableOpacity>
       );
       return (
@@ -118,6 +123,7 @@ class FavesScreen extends React.Component {
   }
 
   handleEditButtonPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     if (this.state.editing) {
       this.setState({ editing: false });
       this.renderEditButton();
@@ -136,9 +142,9 @@ class FavesScreen extends React.Component {
             style={{ position: "relative" }}
             onPress={this.handleEditButtonPress}
           >
-            <Text onPress={this.handleEditButtonPress} style = {
-              { color: "#fcddd9", fontSize: 15, marginRight: 14, fontWeight: "600" }
-            }>EDIT</Text>
+            <FAIcon name="cog" color="#fcddd9" size={27}
+              style={{ marginRight: 16 }}
+            />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
@@ -146,7 +152,7 @@ class FavesScreen extends React.Component {
             onPress={this.handleEditButtonPress}
           >
             <Text onPress={this.handleEditButtonPress} style = {
-              { color: "#fcddd9", fontSize: 15, marginRight: 14, fontWeight: "600" }
+              { color: "#ffd6d1", fontSize: 15, marginRight: 14, fontWeight: "600" }
             }>DONE</Text>
           </TouchableOpacity>
         )
