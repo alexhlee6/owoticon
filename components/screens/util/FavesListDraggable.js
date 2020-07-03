@@ -4,7 +4,8 @@ import { getAllFaves, addFave, deleteFave, updateFaveOrder } from '../../../redu
 const mSTP = (state, ownProps) => {
   return {
     faves: state.faves.faves,
-    favesPos: state.faves.favesPos
+    favesPos: state.faves.favesPos,
+    orderedFaves: state.faves.orderedFaves
   }
 }
 const mDTP = (dispatch) => {
@@ -21,7 +22,8 @@ import {
   ScrollView, Text, View, Clipboard, TouchableWithoutFeedback, TouchableOpacity, Share, StyleSheet, Button
 } from 'react-native';
 
-import { DraggableGrid } from 'react-native-draggable-grid';
+// import { DraggableGrid } from 'react-native-draggable-grid';
+import { DraggableGrid } from '../../elements/draggable_grid';
 import Modal from 'react-native-modal';
 
 
@@ -44,10 +46,10 @@ class FavesListDraggable extends React.Component {
   constructor(props) {
     super(props);
     
-    let orderedFaves = [];
-    props.favesPos.forEach(key => {
-      orderedFaves.push({ key, text: props.faves[key] })
-    });
+    // let orderedFaves = [];
+    // props.favesPos.forEach(key => {
+    //   orderedFaves.push({ key, text: props.faves[key], disabledDrag: false })
+    // });
 
     this.state = {
       justTouched: "",
@@ -56,7 +58,7 @@ class FavesListDraggable extends React.Component {
       editing: false,
       faves: props.faves,
       favesPos: props.favesPos,
-      orderedFaves,
+      orderedFaves: props.orderedFaves,
       isModalVisible: false
     }
   }
@@ -67,14 +69,14 @@ class FavesListDraggable extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
-      let orderedFaves = [];
-      this.props.favesPos.forEach(key => {
-        orderedFaves.push({ key, text: this.props.faves[key] })
-      });
+      // let orderedFaves = [];
+      // this.props.favesPos.forEach(key => {
+      //   orderedFaves.push({ key, text: this.props.faves[key], disabledDrag: false })
+      // });
       this.setState({
         faves: this.props.faves,
         favesPos: this.props.favesPos,
-        orderedFaves
+        orderedFaves: this.props.orderedFaves
       });
     }
   }
@@ -86,23 +88,31 @@ class FavesListDraggable extends React.Component {
   addToFaves = (key, str) => {
     return () => {
       this.props.addFave(key, str)
-        .then(() => this.setState({ faves: this.props.faves, favesPos: this.props.favesPos }));
+        .then(() => this.setState({ 
+          faves: this.props.faves, favesPos: this.props.favesPos, orderedFaves: this.props.orderedFaves 
+        }));
     }
   }
 
   removeFromFaves = (key) => {
     return () => {
       this.props.deleteFave(key)
-        .then(() => this.setState({ faves: this.props.faves, favesPos: this.props.favesPos }));
+        .then(() => this.setState({ 
+          faves: this.props.faves, favesPos: this.props.favesPos, orderedFaves: this.props.orderedFaves 
+        }));
     }
   }
 
   saveFavesOrder = (newOrderedFaves) => {
-    let newFavesPos = [];
-    newOrderedFaves.forEach(item => {
-      newFavesPos.push(item.key);
+    // let newFavesPos = [];
+    // newOrderedFaves.forEach(item => {
+    //   newFavesPos.push(item.key);
+    // });
+    newOrderedFaves = newOrderedFaves.map(item => {
+      delete item["disabledDrag"];
+      return item;
     });
-    this.props.updateFaveOrder(newFavesPos);
+    this.props.updateFaveOrder(newOrderedFaves);
   }
 
 
@@ -167,12 +177,15 @@ class FavesListDraggable extends React.Component {
                 renderItem={this.renderItem}
                 itemHeight={60}
                 data={this.state.orderedFaves}
-                onDragStart={() => {
-                  this.setState({ scrollEnabled: false })
-        
+                onLongPress={() => {
+                  this.setState({ scrollEnabled: false });
+                  console.log("LONG PRESS");
                 }}
+                // onDragStart={() => {
+                //   this.setState({ scrollEnabled: false })
+                // }}
                 onDragRelease={(orderedFaves) => {
-                  console.log(orderedFaves);
+                  // console.log(orderedFaves);
                   this.saveFavesOrder(orderedFaves);
                   this.setState({orderedFaves, scrollEnabled: true});// need reset the props data sort after drag release
                 }}

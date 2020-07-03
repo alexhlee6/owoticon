@@ -2,10 +2,11 @@ import { AsyncStorage } from 'react-native';
 
 
 // Root Storage: Store All
-export const storeAllData = async (faves, favesPos) => {
+export const storeAllData = async (faves, favesPos, orderedFaves) => {
   faves = JSON.stringify(faves);
   favesPos = JSON.stringify(favesPos);
-  await AsyncStorage.multiSet([["faves", faves], ["favesPos", favesPos]]);
+  orderedFaves = JSON.stringify(orderedFaves);
+  await AsyncStorage.multiSet([["faves", faves], ["favesPos", favesPos], ["orderedFaves", orderedFaves]]);
 
   const newData = await retrieveAllData().then(res => res); 
   return newData;
@@ -42,18 +43,25 @@ export const retrieveAllData = async () => {
   const allKeys = await AsyncStorage.getAllKeys().then(res => res);
   
   if (allKeys.length === 0) { // No faves yet:
-    return { "faves": {}, "favesPos": [] };
+    return { "faves": {}, "favesPos": [], "orderedFaves": [] };
   } 
   
-  const allData = await AsyncStorage.multiGet(["faves", "favesPos"]).then(res => res);
+  const allData = await AsyncStorage.multiGet(["faves", "favesPos", "orderedFaves"]).then(res => res);
+  
+
   const faves = JSON.parse(allData[0][1]);
   const favesPos = JSON.parse(allData[1][1]);
-  return { faves, favesPos };
+  const orderedFaves = JSON.parse(allData[2][1]);
+
+  //console.log({ faves, favesPos, orderedFaves });
+  return { faves, favesPos, orderedFaves };
 };
+
 
 export const deleteAllData = async () => {
   await AsyncStorage.removeItem("faves");
   await AsyncStorage.removeItem("favesPos");
+  await AsyncStorage.removeItem("orderedFaves");
   return true;
 }
 
@@ -75,18 +83,21 @@ export const storeOne = async (key, val) => {
 
   allData["faves"][key] = val;
   allData["favesPos"].push(key);
+  allData["orderedFaves"].push({ key, text: val });
 
-  const newData = await storeAllData(allData["faves"], allData["favesPos"])
+  const newData = await storeAllData(allData["faves"], allData["favesPos"], allData["orderedFaves"])
     .then(data => data);
   return newData;
 }
 
 // Update Fave Order  (save favesPos array)
-export const updateFaveOrder = async (newFavesPos) => {
+export const updateFaveOrder = async (orderedFaves) => {
   let allData = await retrieveAllData().then(data => data);
   let dupFaves = allData["faves"];
+  let newFavesPos = orderedFaves.map(item => item.key);
+  
 
-  const newData = await storeAllData(dupFaves, newFavesPos)
+  const newData = await storeAllData(dupFaves, newFavesPos, orderedFaves)
     .then(data => data)
     .catch(err => console.log(err));
   return newData;
@@ -105,6 +116,9 @@ export const deleteOne = async (key) => {
   const favesPos = newData["favesPos"].filter(el => el !== key);
   newData["favesPos"] = favesPos;
 
-  const returnVal = await storeAllData(newData["faves"], newData["favesPos"]).then(data => data);
+  const orderedFaves = newData["orderedFaves"].filter(item => item.key !== key);
+  newData["orderedFaves"] = orderedFaves;
+
+  const returnVal = await storeAllData(newData["faves"], newData["favesPos"], newData["orderedFaves"]).then(data => data);
   return returnVal;
 }
