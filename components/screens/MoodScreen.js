@@ -124,20 +124,20 @@ class MoodScreen extends React.Component {
   }
 
   // DEVELOPMENT CHECK FOR DUPLICATES:
-  // componentDidUpdate() {
-  //   if (this.state.emotes) {
-  //     let has = [];
-  //     let set = new Set();
-  //     this.state.emotes.forEach(str => {
-  //       if (set.has(str)) {
-  //         has.push(str);
-  //       } else {
-  //         set.add(str);
-  //       }
-  //     });
-  //     if (has.length > 0) alert(has.join(","));
-  //   }
-  // }
+  componentDidUpdate() {
+    if (this.state.emotes) {
+      let has = [];
+      let set = new Set();
+      this.state.emotes.forEach(str => {
+        if (set.has(str)) {
+          has.push(str);
+        } else {
+          set.add(str);
+        }
+      });
+      if (has.length > 0) alert(has.join(","));
+    }
+  }
 
   handleTouch(str) {
     return () => {
