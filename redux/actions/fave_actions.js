@@ -27,8 +27,8 @@ export const deleteFave = (faveKey) => dispatch => {
   })
 }
 
-export const updateFaveOrder = (favesPos) => dispatch => {
-  return StorageUtil.updateFaveOrder(favesPos).then(faves => {
+export const updateFaveOrder = (orderedFaves) => dispatch => {
+  return StorageUtil.updateFaveOrder(orderedFaves).then(faves => {
     dispatch(receiveFaves(faves))
   })
 }

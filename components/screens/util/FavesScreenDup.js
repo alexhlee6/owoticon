@@ -4,6 +4,7 @@ import { getAllFaves, addFave, deleteFave, updateFaveOrder } from '../../redux/a
 const mSTP = (state, ownProps) => {
   return {
     faves: state.faves.faves,
+    favesPos: state.faves.favesPos,
     orderedFaves: state.faves.orderedFaves
   }
 }
@@ -12,7 +13,7 @@ const mDTP = (dispatch) => {
     getAllFaves: () => dispatch(getAllFaves()),
     addFave: (key, val) => dispatch(addFave(key, val)),
     deleteFave: (faveKey) => dispatch(deleteFave(faveKey)),
-    updateFaveOrder: (orderedFaves) => dispatch(updateFaveOrder(orderedFaves))
+    updateFaveOrder: (favesPos) => dispatch(updateFaveOrder(favesPos))
   }
 }
 
@@ -21,7 +22,7 @@ import {
   ScrollView, Text, View, Clipboard, TouchableWithoutFeedback, TouchableOpacity, Share
 } from 'react-native';
 import FavesListDraggable from './util/FavesListDraggable';
-
+import FavesListSortable from './util/FavesListSortable';
 import { DraggableGrid } from 'react-native-draggable-grid';
 
 import styles from '../styles/EmoteListStyles';
@@ -34,6 +35,11 @@ class FavesScreen extends React.Component {
   constructor(props) {
     super(props);
 
+    // let orderedFaves = [];
+    // props.favesPos.forEach(key => {
+    //   orderedFaves.push({ key, text: props.faves[key], disabledDrag: true })
+    // });
+
     
     this.state = {
       justTouched: "",
@@ -41,6 +47,7 @@ class FavesScreen extends React.Component {
       menuOpen: false,
       editing: false,
       faves: props.faves,
+      favesPos: props.favesPos,
       orderedFaves: props.orderedFaves || [],
       scrollEnabled: true
     }
@@ -53,11 +60,16 @@ class FavesScreen extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log(this.props);
     if (prevProps !== this.props) {
+      // let orderedFaves = [];
+      // this.props.favesPos.forEach(key => {
+      //   orderedFaves.push({ key, text: this.props.faves[key], disabledDrag: !this.state.editing })
+      // });
       this.setState({
         faves: this.props.faves,
+        favesPos: this.props.favesPos,
         orderedFaves: this.props.orderedFaves
+        // orderedFaves
       });
     }
   }
@@ -66,7 +78,7 @@ class FavesScreen extends React.Component {
     return () => {
       this.props.addFave(key, str)
         .then(() => this.setState({ 
-          faves: this.props.faves, orderedFaves: this.props.orderedFaves
+          faves: this.props.faves, favesPos: this.props.favesPos, orderedFaves: this.props.orderedFaves
         }));
     }
   }
@@ -75,12 +87,18 @@ class FavesScreen extends React.Component {
     return () => {
       this.props.deleteFave(key)
         .then(() => this.setState({ 
-          faves: this.props.faves, orderedFaves: this.props.orderedFaves
+          faves: this.props.faves, favesPos: this.props.favesPos, orderedFaves: this.props.orderedFaves
         }));
     }
   }
 
   saveFavesOrder = (newOrderedFaves) => {
+    // let newFavesPos = [];
+    newOrderedFaves = newOrderedFaves.map(item => {
+      // newFavesPos.push(item.key);
+      delete item["disabledDrag"];
+      return item;
+    });
     this.props.updateFaveOrder(newOrderedFaves);
   }
 
@@ -201,14 +219,15 @@ class FavesScreen extends React.Component {
       return <FavesListDraggable navigation={this.props.navigation} />
     }
 
-    const emotesArray = this.state.orderedFaves;
+    const emotesArray = [];
+    this.state.favesPos.map(key => emotesArray.push(this.state.faves[key]));
 
-    const emotes = emotesArray.map((item, i) => {
+    const emotes = emotesArray.map((str, i) => {
       const rightPos = i % 2 === 0 ? 150 : -10;
       const buttonStyle = Object.assign({}, styles.favoriteButton);
       buttonStyle.right = rightPos;
 
-      const emoteName = item.key;
+      const emoteName = this.state.favesPos[i];
       
       const favesIcon = (
         this.state.faves[emoteName] ? (
@@ -223,7 +242,7 @@ class FavesScreen extends React.Component {
         ) : (
             <TouchableOpacity 
               style={buttonStyle}
-              onPress={this.addToFaves(emoteName, item.text)}
+              onPress={this.addToFaves(emoteName, str)}
             >
               <FAIcon name="heart-o" color="#fcddd9" size={18}
                 style={{ paddingTop: 3 }}
@@ -235,13 +254,13 @@ class FavesScreen extends React.Component {
       return (
         <View key={`container-${i}`} style={ styles.emoteContainer }>
           <TouchableOpacity key={i} 
-            onPress={this.handleTouch(item.text)} onLongPress={this.handleLongPress(item.text)}
+            onPress={this.handleTouch(str)} onLongPress={this.handleLongPress(str)}
           >
             <View style={styles.emoteBackground}>
-              { this.state.justTouched === item.text ? <Text style={styles.copiedText}>Copied!</Text> : null }
+              { this.state.justTouched === str ? <Text style={styles.copiedText}>Copied!</Text> : null }
               { this.state.editing && favesIcon }
               <Text key={i} style={styles.emoteText}>
-                {item.text}
+                {str}
               </Text>
             </View>
           </TouchableOpacity>
@@ -250,6 +269,7 @@ class FavesScreen extends React.Component {
     });
 
     const emoteData = this.state.orderedFaves.map(item => {
+      item.dragEnabled = this.state.editing;
       return item
     });
 

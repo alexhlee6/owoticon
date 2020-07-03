@@ -4,7 +4,6 @@ import { getAllFaves, addFave, deleteFave, updateFaveOrder } from '../../../redu
 const mSTP = (state, ownProps) => {
   return {
     faves: state.faves.faves,
-    favesPos: state.faves.favesPos,
     orderedFaves: state.faves.orderedFaves
   }
 }
@@ -13,7 +12,7 @@ const mDTP = (dispatch) => {
     getAllFaves: () => dispatch(getAllFaves()),
     addFave: (key, val) => dispatch(addFave(key, val)),
     deleteFave: (faveKey) => dispatch(deleteFave(faveKey)),
-    updateFaveOrder: (favesPos) => dispatch(updateFaveOrder(favesPos))
+    updateFaveOrder: (orderedFaves) => dispatch(updateFaveOrder(orderedFaves))
   }
 }
 
@@ -47,18 +46,12 @@ class FavesListDraggable extends React.Component {
   constructor(props) {
     super(props);
     
-    // let orderedFaves = [];
-    // props.favesPos.forEach(key => {
-    //   orderedFaves.push({ key, text: props.faves[key], disabledDrag: false })
-    // });
-
     this.state = {
       justTouched: "",
       justLongPressed: "",
       menuOpen: false,
       editing: false,
       faves: props.faves,
-      favesPos: props.favesPos,
       orderedFaves: props.orderedFaves,
       isModalVisible: false,
       // dragStartAnimatedValue: new Animated.Value(1),
@@ -72,13 +65,8 @@ class FavesListDraggable extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
-      // let orderedFaves = [];
-      // this.props.favesPos.forEach(key => {
-      //   orderedFaves.push({ key, text: this.props.faves[key], disabledDrag: false })
-      // });
       this.setState({
         faves: this.props.faves,
-        favesPos: this.props.favesPos,
         orderedFaves: this.props.orderedFaves
       });
     }
@@ -92,7 +80,7 @@ class FavesListDraggable extends React.Component {
     return () => {
       this.props.addFave(key, str)
         .then(() => this.setState({ 
-          faves: this.props.faves, favesPos: this.props.favesPos, orderedFaves: this.props.orderedFaves 
+          faves: this.props.faves, orderedFaves: this.props.orderedFaves 
         }));
     }
   }
@@ -101,20 +89,12 @@ class FavesListDraggable extends React.Component {
     return () => {
       this.props.deleteFave(key)
         .then(() => this.setState({ 
-          faves: this.props.faves, favesPos: this.props.favesPos, orderedFaves: this.props.orderedFaves 
+          faves: this.props.faves, orderedFaves: this.props.orderedFaves 
         }));
     }
   }
 
   saveFavesOrder = (newOrderedFaves) => {
-    // let newFavesPos = [];
-    // newOrderedFaves.forEach(item => {
-    //   newFavesPos.push(item.key);
-    // });
-    newOrderedFaves = newOrderedFaves.map(item => {
-      delete item["disabledDrag"];
-      return item;
-    });
     this.props.updateFaveOrder(newOrderedFaves);
   }
 
@@ -225,16 +205,13 @@ class FavesListDraggable extends React.Component {
           onDragStart                  = { () => {
             this.setState({ scrollEnabled: false })
           } } 
-          // dragStartAnimation={
-          //   this.getDragStartAnimation()
-          // }
           >
       
           {
-            this.state.favesPos.map( (key, index) =>
+            this.state.orderedFaves.map( item =>
       
-              <View style={styles.emoteBackground} key={index} onTap={() => console.log("Item number:", index, "was tapped!") }>
-                <Text style={styles.emoteText}>{this.state.faves[key]}</Text>
+              <View style={styles.emoteBackground} key={item.key} onTap={() => console.log("Item:", item.key, "was tapped!") }>
+                <Text style={styles.emoteText}>{item.text}</Text>
               </View>
       
             )

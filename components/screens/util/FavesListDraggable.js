@@ -4,7 +4,6 @@ import { getAllFaves, addFave, deleteFave, updateFaveOrder } from '../../../redu
 const mSTP = (state, ownProps) => {
   return {
     faves: state.faves.faves,
-    favesPos: state.faves.favesPos,
     orderedFaves: state.faves.orderedFaves
   }
 }
@@ -13,7 +12,7 @@ const mDTP = (dispatch) => {
     getAllFaves: () => dispatch(getAllFaves()),
     addFave: (key, val) => dispatch(addFave(key, val)),
     deleteFave: (faveKey) => dispatch(deleteFave(faveKey)),
-    updateFaveOrder: (favesPos) => dispatch(updateFaveOrder(favesPos))
+    updateFaveOrder: (orderedFaves) => dispatch(updateFaveOrder(orderedFaves))
   }
 }
 
@@ -25,7 +24,6 @@ import {
 // import { DraggableGrid } from 'react-native-draggable-grid';
 import { DraggableGrid } from '../../elements/draggable_grid';
 import Modal from 'react-native-modal';
-
 
 const styling = StyleSheet.create({
   button:{
@@ -45,11 +43,6 @@ import * as Haptics from 'expo-haptics';
 class FavesListDraggable extends React.Component {
   constructor(props) {
     super(props);
-    
-    // let orderedFaves = [];
-    // props.favesPos.forEach(key => {
-    //   orderedFaves.push({ key, text: props.faves[key], disabledDrag: false })
-    // });
 
     this.state = {
       justTouched: "",
@@ -57,7 +50,6 @@ class FavesListDraggable extends React.Component {
       menuOpen: false,
       editing: false,
       faves: props.faves,
-      favesPos: props.favesPos,
       orderedFaves: props.orderedFaves,
       isModalVisible: false
     }
@@ -69,13 +61,8 @@ class FavesListDraggable extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
-      // let orderedFaves = [];
-      // this.props.favesPos.forEach(key => {
-      //   orderedFaves.push({ key, text: this.props.faves[key], disabledDrag: false })
-      // });
       this.setState({
         faves: this.props.faves,
-        favesPos: this.props.favesPos,
         orderedFaves: this.props.orderedFaves
       });
     }
@@ -89,7 +76,7 @@ class FavesListDraggable extends React.Component {
     return () => {
       this.props.addFave(key, str)
         .then(() => this.setState({ 
-          faves: this.props.faves, favesPos: this.props.favesPos, orderedFaves: this.props.orderedFaves 
+          faves: this.props.faves, orderedFaves: this.props.orderedFaves 
         }));
     }
   }
@@ -98,20 +85,12 @@ class FavesListDraggable extends React.Component {
     return () => {
       this.props.deleteFave(key)
         .then(() => this.setState({ 
-          faves: this.props.faves, favesPos: this.props.favesPos, orderedFaves: this.props.orderedFaves 
+          faves: this.props.faves, orderedFaves: this.props.orderedFaves 
         }));
     }
   }
 
   saveFavesOrder = (newOrderedFaves) => {
-    // let newFavesPos = [];
-    // newOrderedFaves.forEach(item => {
-    //   newFavesPos.push(item.key);
-    // });
-    newOrderedFaves = newOrderedFaves.map(item => {
-      delete item["disabledDrag"];
-      return item;
-    });
     this.props.updateFaveOrder(newOrderedFaves);
   }
 
@@ -148,6 +127,12 @@ class FavesListDraggable extends React.Component {
     )
   }
 
+  handleLongPress = () => {
+    this.setState({ scrollEnabled: false });
+    // Haptics.selectionAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+  }
+
   render() {
     return (
       
@@ -177,16 +162,16 @@ class FavesListDraggable extends React.Component {
                 renderItem={this.renderItem}
                 itemHeight={60}
                 data={this.state.orderedFaves}
-                onLongPress={() => {
-                  this.setState({ scrollEnabled: false });
-                  console.log("LONG PRESS");
-                }}
+                onLongPress={this.handleLongPress}
+                //dragEnabled={this.state.editing}
+                dragEnabled={true}
                 // onDragStart={() => {
                 //   this.setState({ scrollEnabled: false })
                 // }}
                 onDragRelease={(orderedFaves) => {
                   // console.log(orderedFaves);
                   this.saveFavesOrder(orderedFaves);
+                  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
                   this.setState({orderedFaves, scrollEnabled: true});// need reset the props data sort after drag release
                 }}
               />

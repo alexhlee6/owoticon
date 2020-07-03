@@ -4,7 +4,7 @@ import { getAllFaves, addFave, deleteFave } from '../../redux/actions/fave_actio
 const mSTP = (state, ownProps) => {
   return {
     faves: state.faves.faves,
-    favesPos: state.faves.favesPos
+    
   }
 }
 const mDTP = (dispatch) => {
@@ -45,7 +45,7 @@ class MoodScreen extends React.Component {
       editing: false,
       emotes: EMOTES[moodName],
       faves: this.props.faves,
-      favesPos: this.props.favesPos,
+      orderedFaves: this.props.orderedFaves,
       isModalVisible: false,
       modalData: {
         key: "",
@@ -64,7 +64,7 @@ class MoodScreen extends React.Component {
     if (prevProps !== this.props) {
       this.setState({
         faves: this.props.faves,
-        favesPos: this.props.favesPos
+        orderedFaves: this.props.orderedFaves
       });
     }
   }
@@ -72,14 +72,14 @@ class MoodScreen extends React.Component {
   addToFaves = (key, str) => {
     return () => {
       this.props.addFave(key, str)
-        .then(() => this.setState({ faves: this.props.faves, favesPos: this.props.favesPos }));
+        .then(() => this.setState({ faves: this.props.faves, orderedFaves: this.props.orderedFaves }));
     }
   }
 
   removeFromFaves = (key) => {
     return () => {
       this.props.deleteFave(key)
-        .then(() => this.setState({ faves: this.props.faves, favesPos: this.props.favesPos }));
+        .then(() => this.setState({ faves: this.props.faves, orderedFaves: this.props.orderedFaves }));
     }
   }
 

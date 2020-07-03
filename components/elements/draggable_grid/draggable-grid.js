@@ -11,6 +11,8 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+import * as Haptics from 'expo-haptics';
+
 exports.DraggableGrid = void 0;
 var React = require("react");
 var react_1 = require("react");
@@ -153,6 +155,8 @@ exports.DraggableGrid = function (props) {
     }
     function resetBlockPositionByOrder(activeItemOrder, insertedPositionOrder) {
         var disabledReSortedItemCount = 0;
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        // Haptics.selectionAsync(Haptics.ImpactFeedbackStyle.Light);
         if (activeItemOrder > insertedPositionOrder) {
             for (var i = activeItemOrder - 1; i >= insertedPositionOrder; i--) {
                 var key = getKeyByOrder(i);
@@ -207,6 +211,9 @@ exports.DraggableGrid = function (props) {
         return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
     }
     function setActiveBlock(itemIndex, item) {
+        if (!props.dragEnabled) {
+            return
+        }
         if (item.disabledDrag)
             return;
         dragStarted = false;
