@@ -155,7 +155,8 @@ exports.DraggableGrid = function (props) {
     }
     function resetBlockPositionByOrder(activeItemOrder, insertedPositionOrder) {
         var disabledReSortedItemCount = 0;
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        Haptics.selectionAsync(Haptics.ImpactFeedbackStyle.Heavy);
         // Haptics.selectionAsync(Haptics.ImpactFeedbackStyle.Light);
         if (activeItemOrder > insertedPositionOrder) {
             for (var i = activeItemOrder - 1; i >= insertedPositionOrder; i--) {

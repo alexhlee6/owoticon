@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { getAllFaves, addFave, deleteFave, updateFaveOrder } from '../../redux/actions/fave_actions';
 
-const mSTP = (state, ownProps) => {
+const mSTP = (state) => {
   return {
     faves: state.faves.faves,
     orderedFaves: state.faves.orderedFaves
@@ -20,20 +20,16 @@ import React from "react";
 import { 
   ScrollView, Text, View, Clipboard, TouchableWithoutFeedback, TouchableOpacity, Share
 } from 'react-native';
-import FavesListDraggable from './util/FavesListDraggable';
 
-import { DraggableGrid } from 'react-native-draggable-grid';
-
+import { DraggableGrid } from '../elements/draggable_grid';
 import styles from '../styles/EmoteListStyles';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
-import OcticonsIcon from 'react-native-vector-icons/Octicons';
 import * as Haptics from 'expo-haptics';
 
 
 class FavesScreen extends React.Component {
   constructor(props) {
     super(props);
-
     
     this.state = {
       justTouched: "",
@@ -45,15 +41,10 @@ class FavesScreen extends React.Component {
       scrollEnabled: true
     }
     this.renderEditButton();
-    this.handleTouch = this.handleTouch.bind(this);
   }
 
-  componentDidMount() {
-    //this.props.getAllFaves()
-  }
 
   componentDidUpdate(prevProps) {
-    console.log(this.props);
     if (prevProps !== this.props) {
       this.setState({
         faves: this.props.faves,
@@ -85,36 +76,48 @@ class FavesScreen extends React.Component {
   }
 
   renderItem = (item) => {
-    const buttonStyle = Object.assign({}, styles.favoriteButton);
-    buttonStyle.right = -5;
-    buttonStyle.backgroundColor = "#fcddd9";
-    buttonStyle.width = 26;
-    buttonStyle.height = 26;
-    buttonStyle.bottom = 29;
+    
 
-    const trashIcon = (
-      <TouchableOpacity style={ buttonStyle } onPress={ this.removeFromFaves(item.key) }>
-        <FAIcon name="close" color="white" size={15} style={{ paddingTop: 0 }} />
-      </TouchableOpacity>
-    );
+    if (this.state.editing) {
+      const buttonStyle = Object.assign({}, styles.favoriteButton);
+      buttonStyle.right = -5;
+      buttonStyle.backgroundColor = "#fcddd9";
+      buttonStyle.width = 26;
+      buttonStyle.height = 26;
+      buttonStyle.bottom = 29;
 
-    return (
-      <View style={styles.emoteContainer} key={item.key}>
-        <View style={styles.emoteBackground}>
-          { this.state.editing ? trashIcon : null }
-          <Text style={styles.emoteText}>{item.text}</Text>
+      const trashIcon = (
+        <TouchableOpacity style={ buttonStyle } onPress={ this.removeFromFaves(item.key) }>
+          <FAIcon name="close" color="white" size={15} style={{ paddingTop: 0 }} />
+        </TouchableOpacity>
+      );
+      return (
+        <View style={styles.emoteContainer} key={item.key}>
+          <View style={styles.emoteBackground}>
+            { trashIcon }
+            <Text style={styles.emoteText}>{item.text}</Text>
+          </View>
         </View>
-      </View>
-    );
+      );
+    } else {
+      return (
+        <View style={styles.emoteContainer} key={item.key}>
+          <TouchableOpacity 
+            style={styles.emoteBackground} 
+            onPress={this.handleCopy(item.text)} 
+            onLongPress={this.handleMenuLongPress(item.text)}
+          >
+            { this.state.justTouched === item.text ? (
+              <Text style={styles.copiedText}>Copied!</Text> 
+            ) : null }
+            <Text style={styles.emoteText}>{item.text}</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }
   }
 
   handleEditButtonPress = () => {
-    let orderedFaves = this.state.orderedFaves.slice();
-    orderedFaves = orderedFaves.map(item => {
-      item.disabledDrag = this.state.editing ? true : false;
-      return item;
-    });
-
     if (this.state.editing) {
       this.setState({ editing: false });
       this.renderEditButton();
@@ -151,9 +154,9 @@ class FavesScreen extends React.Component {
     });
   }
 
-  handleTouch(str) {
+  handleCopy = (str) => {
     return () => {
-      Haptics.selectionAsync(Haptics.ImpactFeedbackStyle.Heavy);
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
       Clipboard.setString(str);
       this.setState({justTouched: str});
       setTimeout(() => {
@@ -164,7 +167,7 @@ class FavesScreen extends React.Component {
     }
   }
 
-  handleLongPress(str) {
+  handleMenuLongPress = (str) => {
     return async () => {
       try {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
@@ -196,63 +199,13 @@ class FavesScreen extends React.Component {
     }
   }
 
+  handleEditingLongPress = () => {
+    this.setState({ scrollEnabled: false });
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  }
+  
+
   render() {
-    if(this.state.editing) {
-      return <FavesListDraggable navigation={this.props.navigation} />
-    }
-
-    const emotesArray = this.state.orderedFaves;
-
-    const emotes = emotesArray.map((item, i) => {
-      const rightPos = i % 2 === 0 ? 150 : -10;
-      const buttonStyle = Object.assign({}, styles.favoriteButton);
-      buttonStyle.right = rightPos;
-
-      const emoteName = item.key;
-      
-      const favesIcon = (
-        this.state.faves[emoteName] ? (
-          <TouchableOpacity 
-            style={ buttonStyle }
-            onPress={ this.removeFromFaves(emoteName) }
-          >
-            <FAIcon name="heart" color="#fcddd9" size={18}
-              style={{ paddingTop: 3 }}
-            />
-          </TouchableOpacity>
-        ) : (
-            <TouchableOpacity 
-              style={buttonStyle}
-              onPress={this.addToFaves(emoteName, item.text)}
-            >
-              <FAIcon name="heart-o" color="#fcddd9" size={18}
-                style={{ paddingTop: 3 }}
-              />
-            </TouchableOpacity>
-        )
-      );
-
-      return (
-        <View key={`container-${i}`} style={ styles.emoteContainer }>
-          <TouchableOpacity key={i} 
-            onPress={this.handleTouch(item.text)} onLongPress={this.handleLongPress(item.text)}
-          >
-            <View style={styles.emoteBackground}>
-              { this.state.justTouched === item.text ? <Text style={styles.copiedText}>Copied!</Text> : null }
-              { this.state.editing && favesIcon }
-              <Text key={i} style={styles.emoteText}>
-                {item.text}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      );
-    });
-
-    const emoteData = this.state.orderedFaves.map(item => {
-      return item
-    });
-
     return (
       <ScrollView 
         contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }} 
@@ -264,22 +217,18 @@ class FavesScreen extends React.Component {
             numColumns={2}
             renderItem={this.renderItem}
             itemHeight={60}
-            data={emoteData}
+            data={this.state.orderedFaves}
+            dragEnabled={this.state.editing}
+            onLongPress={this.handleEditingLongPress}
             onDragStart={() => {
-              console.log("DRAG START");
               this.setState({ scrollEnabled: false })
             }}
             onDragRelease={(orderedFaves) => {
-              //console.log(orderedFaves);
               this.saveFavesOrder(orderedFaves);
-              this.setState({ scrollEnabled: true, orderedFaves: orderedFaves.slice() });// need reset the props data sort after drag release
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+              this.setState({orderedFaves, scrollEnabled: true});// need reset the props data sort after drag release
             }}
-            // onResetSort={(data) => {
-            //   console.log("RESET SORT", data)
-            // }}
           />
-        
-          {/* { emotes } */}
         </View>
       </ScrollView>
     )
