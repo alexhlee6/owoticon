@@ -7,7 +7,8 @@ import { getAllFaves } from '../../redux/actions/fave_actions';
 
 const mSTP = (state, ownProps) => {
   return {
-    faves: state.faves
+    faves: state.faves.faves,
+    orderedFaves: state.faves.orderedFaves
   }
 }
 const mDTP = (dispatch) => {
@@ -20,12 +21,13 @@ class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      faves: props.faves
+      faves: props.faves,
+      orderedFaves: props.orderedFaves
     }
   }
   
   componentDidMount() {
-    this.props.getAllFaves().then(() => this.setState({faves: this.props.faves}));
+    this.props.getAllFaves().then(() => this.setState({faves: this.props.faves, orderedFaves: this.props.orderedFaves}));
   }
 
   componentDidUpdate() {

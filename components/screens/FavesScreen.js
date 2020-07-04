@@ -18,7 +18,7 @@ const mDTP = (dispatch) => {
 
 import React from "react";
 import { 
-  ScrollView, Text, View, Clipboard, TouchableWithoutFeedback, TouchableOpacity, Share
+  ScrollView, Text, View, Clipboard, TouchableWithoutFeedback, TouchableOpacity, Share, Animated, Easing
 } from 'react-native';
 
 import { DraggableGrid } from '../elements/draggable_grid';
@@ -41,8 +41,23 @@ class FavesScreen extends React.Component {
       scrollEnabled: true
     }
     this.renderEditButton();
+    this.animatedValue = new Animated.Value(0);
   }
 
+  handleAnimation = () => {
+    Animated.loop(
+      // Animation consists of a sequence of steps
+      Animated.sequence([
+        // start rotation in one direction (only half the time is needed)
+        Animated.timing(this.animatedValue, {toValue: 1.0, duration: 50, easing: Easing.linear, useNativeDriver: true}),
+        // rotate in other direction, to minimum value (= twice the duration of above)
+        Animated.timing(this.animatedValue, {toValue: -1.0, duration: 100, easing: Easing.linear, useNativeDriver: true}),
+        // return to begin position
+        Animated.timing(this.animatedValue, {toValue: 0.0, duration: 50, easing: Easing.linear, useNativeDriver: true})
+      ])
+    ).start(); 
+
+}
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
@@ -97,11 +112,25 @@ class FavesScreen extends React.Component {
         </TouchableOpacity>
       );
       return (
-        <View style={styles.emoteContainer} key={item.key}>
-          <View style={styles.emoteBackground}>
-            { trashIcon }
-            <Text style={styles.emoteText}>{item.text}</Text>
-          </View>
+
+        <View 
+          style={styles.emoteContainer} 
+          key={item.key}
+        >
+          <Animated.View 
+            style={{
+              ...styles.emoteBackground,
+              transform: [{
+                rotate: this.animatedValue.interpolate({
+                  inputRange: [-1, 1],
+                  outputRange: ['-0.006rad', '0.006rad']
+                }),
+              }]
+            }}
+          >
+          { trashIcon }
+          <Text style={styles.emoteText}>{item.text}</Text>
+          </Animated.View>
         </View>
       );
     } else {
@@ -135,7 +164,7 @@ class FavesScreen extends React.Component {
 
   renderEditButton = () => {
     this.props.navigation.setOptions({
-      title: "Favorites",
+      title: "My Favorites",
       headerRight: () => {
         return !this.state.editing ? (
           <TouchableOpacity
@@ -212,6 +241,9 @@ class FavesScreen extends React.Component {
   
 
   render() {
+    if (this.state.editing) {
+      this.handleAnimation();
+    }
     return (
       <ScrollView 
         contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }} 

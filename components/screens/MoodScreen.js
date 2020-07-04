@@ -196,39 +196,31 @@ class MoodScreen extends React.Component {
       
       const favesIcon = (
         this.state.faves[emoteName] ? (
-        <TouchableWithoutFeedback 
-          onPress={ this.removeFromFaves(emoteName) }
-        >
-          <View style={ buttonStyle }>
-          <FAIcon name="heart" color="#ffd4cf" size={18}
-            style={{ paddingTop: 3 }}
-          />
-          </View>
-        </TouchableWithoutFeedback>
+        <View style={ buttonStyle }>
+        <FAIcon name="heart" color="#ffd4cf" size={18}
+          style={{ paddingTop: 3 }}
+        />
+        </View>
       ) 
         : (
-          <TouchableWithoutFeedback 
-            onPress={this.addToFaves(emoteName, str)}
-          >
-            <View style={buttonStyle}>
-              <FAIcon name="heart-o" color="#ffd4cf" size={18}
-                style={{ paddingTop: 3 }}
-              />
-            </View>
-          </TouchableWithoutFeedback>
+          <View style={buttonStyle}>
+            <FAIcon name="heart-o" color="#ffd4cf" size={18}
+              style={{ paddingTop: 3 }}
+            />
+          </View>
         )
       );
 
       if (this.state.editing) {
         return (
-          <View key={`container-${i}`} style={ styles.emoteContainer }>
+          <TouchableOpacity key={`container-${i}`} style={ styles.emoteContainer } onPress={ this.state.faves[emoteName] ? this.removeFromFaves(emoteName) : this.addToFaves(emoteName, str) }>
             <View style={styles.emoteBackground}>
               { favesIcon }
               <Text key={i} style={styles.emoteText}>
                 {str}
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
         );
       }
 

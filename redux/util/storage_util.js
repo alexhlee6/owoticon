@@ -46,10 +46,13 @@ export const retrieveAllData = async () => {
   } 
   
   const allData = await AsyncStorage.multiGet(["faves", "orderedFaves"]).then(res => res);
-  
 
   const faves = JSON.parse(allData[0][1]);
   const orderedFaves = JSON.parse(allData[1][1]);
+  // console.log({
+  //   faves,
+  //   orderedFaves
+  // })
 
   //console.log({ faves, orderedFaves });
   return { faves, orderedFaves };
@@ -62,7 +65,6 @@ export const deleteAllData = async () => {
   await AsyncStorage.removeItem("orderedFaves");
   return true;
 }
-
 /*
   DATA EXAMPLE: 
 
@@ -91,8 +93,6 @@ export const updateFaveOrder = async (orderedFaves) => {
   let allData = await retrieveAllData().then(data => data);
   let dupFaves = allData["faves"];
   
-  
-
   const newData = await storeAllData(dupFaves, orderedFaves)
     .then(data => data)
     .catch(err => console.log(err));
