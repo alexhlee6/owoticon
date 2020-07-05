@@ -3,8 +3,7 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { AppLoading } from "expo";
 import { Asset } from 'expo-asset';
-import { View, Dimensions } from "react-native";
-
+import { View, Dimensions, Text, Image } from "react-native";
 
 // Redux:
 import { Provider } from 'react-redux';
@@ -16,6 +15,20 @@ import Header from "./components/Header";
 import MainNav from "./components/navs/MainNav.js";
 
 
+function cacheImages(images) {
+  return images.map(image => {
+    if (typeof image === 'string') {
+      return Image.prefetch(image);
+    } else {
+      return Asset.fromModule(image).downloadAsync();
+    }
+  });
+}
+
+// function cacheFonts(fonts) {
+//   return fonts.map(font => Font.loadAsync(font));
+// }
+
 export default class App extends React.Component {
 
   state = {
@@ -23,12 +36,17 @@ export default class App extends React.Component {
   }
 
   async _cacheResourcesAsync() {
-    const images = [require('./assets/icon.png')];
+    const images = [
+      require('./assets/icon.png'),
+      require('./assets/images/heart.png'),
+      require('./assets/images/heart-o.png'),
+    ];
 
-    const cacheImages = images.map(image => {
-      return Asset.fromModule(image).downloadAsync();
-    });
-    return Promise.all(cacheImages);
+    const imageAssets = cacheImages(images);
+
+    // const fontAssets = cacheFonts([FontAwesome.font]);
+    return Promise.all([...imageAssets]);
+    // return Promise.all(cacheImages);
   }
 
   render() {

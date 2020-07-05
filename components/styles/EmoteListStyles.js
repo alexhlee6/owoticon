@@ -68,5 +68,35 @@ export default StyleSheet.create({
     alignItems: "center",
     position: "absolute", 
     bottom: 20
+  },
+  buttonStyleLeft: {
+    width: 35, 
+    height: 35,
+    borderRadius: 50, 
+    zIndex: 5,
+    backgroundColor: "transparent",
+    justifyContent: "center", 
+    alignItems: "center",
+    position: "absolute", 
+    top: -5,
+    right: 140,
+    
+  },
+  buttonStyleRight: {
+    width: 35, 
+    height: 35,
+    borderRadius: 50, 
+    zIndex: 5,
+    backgroundColor: "transparent",
+    justifyContent: "center", 
+    alignItems: "center",
+    position: "absolute", 
+    top: -5,
+    right: -2
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+    marginTop: 3
   }
 });

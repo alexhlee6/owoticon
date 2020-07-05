@@ -71,7 +71,7 @@ class FavesScreen extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {console.log("STATE:", this.state);
+    if (prevProps !== this.props) {
       if (this.props.orderedFaves.length === 0) {
         this.setState({noFavesYet: true, faves: this.props.faves,
           orderedFaves: this.props.orderedFaves
@@ -263,7 +263,6 @@ class FavesScreen extends React.Component {
   
 
   render() {
-    console.log("STATE:", this.state);
     if (this.state.noFavesYet) {
       return (
         <View style={{ flexGrow: 1, width: "100%", alignItems: "center", justifyContent: "center" }}>

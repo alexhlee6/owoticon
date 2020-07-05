@@ -17,14 +17,14 @@ const mDTP = (dispatch) => {
 
 import React from "react";
 import { 
-  ScrollView, Text, View, Clipboard, TouchableOpacity, Share,
+  ScrollView, Text, View, Clipboard, TouchableOpacity, Share, Image
 } from 'react-native';
 
 import { EMOTES } from "./util/MoodUtil";
 import styles from '../styles/EmoteListStyles';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import * as Haptics from 'expo-haptics';
-
+import { HEART_ICON, HEART_O_ICON } from './util/FavesUtil';
 
 
 
@@ -145,16 +145,8 @@ class MoodScreen extends React.Component {
   }
 
   renderItem = (str, i) => {
-    const rightPos = i % 2 === 0 ? 140 : -2;
-    const buttonStyle = Object.assign({}, styles.favoriteButton);
-    // const buttonStyle = styles.favoriteButton;
-    buttonStyle.right = rightPos;
-    buttonStyle.top = -5;
-    buttonStyle.backgroundColor = "transparent";
-    buttonStyle.borderColor = "transparent";
-
+    const buttonStyle = i % 2 === 0 ? styles.buttonStyleLeft : styles.buttonStyleRight;
     const emoteName = this.state.emoteNamePrefix + i;
-    
     const onPress = this.state.faves[emoteName] ? this.removeFromFaves(emoteName) : this.addToFaves(emoteName, str);
 
     const favesIcon = (
@@ -163,9 +155,7 @@ class MoodScreen extends React.Component {
           onPress={onPress} 
           style={ buttonStyle }
         >
-          <FAIcon name="heart" color="#ffd7d4" size={20}
-            style={{ paddingTop: 3 }}
-          />
+          <Image source={ HEART_ICON } style={styles.iconStyle} />
         </TouchableOpacity>
     ) 
       : (
@@ -173,9 +163,7 @@ class MoodScreen extends React.Component {
           onPress={onPress} 
           style={ buttonStyle }
         >
-          <FAIcon name="heart-o" color="#ffd4d1" size={20}
-            style={{ paddingTop: 3  }}
-          />
+          <Image source={ HEART_O_ICON } style={styles.iconStyle} />
         </TouchableOpacity>
       )
     );
