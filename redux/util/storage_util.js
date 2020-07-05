@@ -64,18 +64,24 @@ export const configureFavesOnInit = async () => {
   let dupCheck = new Set();
 
   // do not include objects in ordered faves that aren't in faves 
-  orderedFaves.forEach(item => {
-    // if newFaves has the item AND its not a duplicate 
-    if (newFaves[item.key] && !dupCheck.has(item.key)) {
-      dupCheck.add(item.key)
-      newOrderedFaves.push(item);
-    } 
-  });
-  Object.keys(allData["faves"]).forEach(key => {
-    if (!dupCheck.has(key)) {
-      delete newFaves[key];
-    }
-  });
+  if (orderedFaves) {
+    orderedFaves.forEach(item => {
+      // if newFaves has the item AND its not a duplicate 
+      if (newFaves[item.key] && !dupCheck.has(item.key)) {
+        dupCheck.add(item.key)
+        newOrderedFaves.push(item);
+      } 
+    });
+  }
+  if (allData["faves"]) {
+    Object.keys(allData["faves"]).forEach(key => {
+      if (!dupCheck.has(key)) {
+        delete newFaves[key];
+      }
+    });
+  }
+  
+  
 
   const newData = await storeAllData(newFaves, newOrderedFaves)
     .then(data => data);

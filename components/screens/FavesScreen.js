@@ -18,13 +18,13 @@ const mDTP = (dispatch) => {
 
 import React from "react";
 import { 
-  ScrollView, Text, View, Clipboard, TouchableWithoutFeedback, TouchableOpacity, Share, Animated, Easing
+  ScrollView, Text, View, Clipboard, TouchableWithoutFeedback, TouchableOpacity, Share, Animated, Easing, Image
 } from 'react-native';
 
 import { DraggableGrid } from '../elements/draggable_grid';
 import styles from '../styles/EmoteListStyles';
-import FAIcon from 'react-native-vector-icons/FontAwesome';
 import * as Haptics from 'expo-haptics';
+import { DELETE_ICON, COG_ICON } from './util/FavesUtil';
 
 
 class FavesScreen extends React.Component {
@@ -128,7 +128,8 @@ class FavesScreen extends React.Component {
 
       const trashIcon = (
         <TouchableOpacity style={ buttonStyle } onPress={ this.removeFromFaves(item.key) }>
-          <FAIcon name="close" color="white" size={16} style={{ paddingTop: 0 }} />
+          {/* <FontAwesome name="close" color="white" size={16} style={{ paddingTop: 0 }} /> */}
+          <Image source={ DELETE_ICON } style={{ width: 10, height: 10 }} />
         </TouchableOpacity>
       );
       return (
@@ -192,9 +193,10 @@ class FavesScreen extends React.Component {
             onPress={this.handleEditButtonPress}
           >
             {/* <FAIcon name="cog" color="#fcddd9" size={27} */}
-            <FAIcon name="cog" color="#ffcbc7" size={27}
+            {/* <FontAwesome name="cog" color="#ffcbc7" size={27}
               style={{ marginRight: 16 }}
-            />
+            /> */}
+            <Image source={ COG_ICON } style={{ width:23, height:23, marginRight: 16 }} />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity

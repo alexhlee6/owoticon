@@ -22,7 +22,6 @@ import {
 
 import { EMOTES } from "./util/MoodUtil";
 import styles from '../styles/EmoteListStyles';
-import FAIcon from 'react-native-vector-icons/FontAwesome';
 import * as Haptics from 'expo-haptics';
 import { HEART_ICON, HEART_O_ICON } from './util/FavesUtil';
 

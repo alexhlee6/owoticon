@@ -4,6 +4,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { AppLoading } from "expo";
 import { Asset } from 'expo-asset';
 import { View, Dimensions, Text, Image } from "react-native";
+import * as Font from 'expo-font';
+import { FontAwesome } from '@expo/vector-icons';
 
 // Redux:
 import { Provider } from 'react-redux';
@@ -25,6 +27,9 @@ function cacheImages(images) {
     }
   });
 }
+function cacheFonts(fonts) {
+  return fonts.map(font => Font.loadAsync(font));
+}
 
 export default class App extends React.Component {
 
@@ -38,9 +43,10 @@ export default class App extends React.Component {
       require('./assets/images/heart.png'),
       require('./assets/images/heart-o.png'),
     ];
+    const fontAssets = cacheFonts([FontAwesome.font]);
 
     const imageAssets = cacheImages(images);
-    return Promise.all([...imageAssets]);
+    await Promise.all([...imageAssets, ...fontAssets]);
   }
 
   configureFaves = () => {
