@@ -42,6 +42,20 @@ export default class App extends React.Component {
       require('./assets/icon.png'),
       require('./assets/images/heart.png'),
       require('./assets/images/heart-o.png'),
+      require('./assets/images/home_icon.png'),
+      require('./assets/images/faves_icon.png'),
+      require('./assets/images/delete_icon.png'),
+      require('./assets/images/cog.png'),
+      require('./assets/images/Angry.jpg'),
+      require('./assets/images/Animals.jpg'),
+      require('./assets/images/Friends.jpg'),
+      require('./assets/images/Funny.jpg'),
+      require('./assets/images/Happy.jpg'),
+      require('./assets/images/Love.jpg'),
+      require('./assets/images/Neutral.jpg'),
+      require('./assets/images/Sad.jpg'),
+      require('./assets/images/Shy.jpg'),
+      require('./assets/images/Surprise.jpg'),
     ];
     const fontAssets = cacheFonts([FontAwesome.font]);
 

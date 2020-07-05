@@ -129,7 +129,7 @@ class FavesScreen extends React.Component {
       const trashIcon = (
         <TouchableOpacity style={ buttonStyle } onPress={ this.removeFromFaves(item.key) }>
           {/* <FontAwesome name="close" color="white" size={16} style={{ paddingTop: 0 }} /> */}
-          <Image source={ DELETE_ICON } style={{ width: 10, height: 10 }} />
+          <Image source={ DELETE_ICON } style={{ width: 12, height: 12 }} />
         </TouchableOpacity>
       );
       return (
