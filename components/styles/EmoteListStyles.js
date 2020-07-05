@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { hide } from 'expo/build/launch/SplashScreen';
 
 
 export default StyleSheet.create({
@@ -14,40 +15,46 @@ export default StyleSheet.create({
   },
   emoteContainer: {
     width: "50%", 
-    height: 60, 
+    height: 65, 
     justifyContent: "center", 
     alignItems: "center"
   },
   emoteBackground: {
     backgroundColor: "white",
     width: 175,
-    height: 50,
-    paddingHorizontal: 20,
+    height: 55,
+    paddingHorizontal: 25,
     paddingVertical: 10,
     marginHorizontal: 5,
     marginVertical: 5,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "#facbc8",
+    // borderColor: "#ffd0cc",
+    // borderColor: "#ffdedb",
+    borderColor: "#ffd4d1",
     alignItems: "center",
     justifyContent: "center",
-    position: "relative"
+    position: "relative",
   },
   emoteText: {
     color: "gray",
-    fontSize: 20
+    color: "#717171",
+    fontSize: 19,
+    textAlign: "center"
   },
   copiedText: {
     color: "#ffc6bd",
-    fontSize: 20,
+    fontSize: 18,
     position: "absolute",
     zIndex: 3,
     backgroundColor: "white",
     minWidth: "100%",
-    maxWidth: "100%",
+    width: 170,
     minHeight: 20,
     textAlign: "center",
-    paddingVertical: 5
+    paddingVertical: 5,
+    paddingHorizontal: 5
   },
   favoriteButton: {
     width: 35, 

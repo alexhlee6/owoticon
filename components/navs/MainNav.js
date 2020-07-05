@@ -11,7 +11,8 @@ export default () => {
   
   return (
     <Tab.Navigator 
-      activeColor="#fab9b4" inactiveColor="#b8b8b8" 
+      // activeColor="#fab9b4" inactiveColor="#b8b8b8" 
+      activeColor="#ffc3bf" inactiveColor="#b8b8b8" 
       barStyle={{backgroundColor: "#fff", height: 70}}
     >
       <Tab.Screen name="Home" component={HomeNav}
@@ -26,7 +27,10 @@ export default () => {
         tabBarIcon: ({ color }) => (
           <Icon name="heart" color={color} size={20} />
         ),
-      }} />
+        
+      }}
+        
+       />
     </Tab.Navigator>
   );
 }

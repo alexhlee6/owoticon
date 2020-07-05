@@ -38,7 +38,8 @@ class FavesScreen extends React.Component {
       editing: false,
       faves: props.faves,
       orderedFaves: props.orderedFaves || [],
-      scrollEnabled: true
+      scrollEnabled: true,
+      noFavesYet: false
     }
     this.renderEditButton();
     this.animatedValue = new Animated.Value(0);
@@ -56,15 +57,32 @@ class FavesScreen extends React.Component {
         Animated.timing(this.animatedValue, {toValue: 0.0, duration: 50, easing: Easing.linear, useNativeDriver: true})
       ])
     ).start(); 
-
-}
+  }
+  componentDidMount() {
+    if (this.state.orderedFaves.length === 0) {
+      this.setState({noFavesYet: true});
+    }
+    this.props.navigation.addListener('blur', () => {
+      if (this.state.editing) {
+        this.setState({ editing: false });
+        this.renderEditButton();
+      }
+    });
+  }
 
   componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      this.setState({
-        faves: this.props.faves,
-        orderedFaves: this.props.orderedFaves
-      });
+    if (prevProps !== this.props) {console.log("STATE:", this.state);
+      if (this.props.orderedFaves.length === 0) {
+        this.setState({noFavesYet: true, faves: this.props.faves,
+          orderedFaves: this.props.orderedFaves
+        });
+      } else {
+        this.setState({
+          faves: this.props.faves,
+          orderedFaves: this.props.orderedFaves,
+          noFavesYet: false
+        });
+      }
     }
   }
 
@@ -94,16 +112,18 @@ class FavesScreen extends React.Component {
   renderItem = (item) => {
     if (this.state.editing) {
       const buttonStyle = {
-        width: 27, 
-        height: 27,
+        width: 26, 
+        height: 26,
         borderRadius: 50, 
         zIndex: 5,
-        backgroundColor: "#ffd4cf",
+        // backgroundColor: "#ffd4cf",
+        // backgroundColor: "#ffdbd9",
+        backgroundColor: "#ffd7d4",
         justifyContent: "center", 
         alignItems: "center",
         position: "absolute", 
-        bottom: 26,
-        right: -5
+        bottom: 32,
+        right: -6
       }
 
       const trashIcon = (
@@ -171,7 +191,8 @@ class FavesScreen extends React.Component {
             style={{ position: "relative" }}
             onPress={this.handleEditButtonPress}
           >
-            <FAIcon name="cog" color="#fcddd9" size={27}
+            {/* <FAIcon name="cog" color="#fcddd9" size={27} */}
+            <FAIcon name="cog" color="#ffcbc7" size={27}
               style={{ marginRight: 16 }}
             />
           </TouchableOpacity>
@@ -181,7 +202,8 @@ class FavesScreen extends React.Component {
             onPress={this.handleEditButtonPress}
           >
             <Text onPress={this.handleEditButtonPress} style = {
-              { color: "#ffd6d1", fontSize: 15, marginRight: 14, fontWeight: "600" }
+              // { color: "#ffd6d1", fontSize: 15, marginRight: 14, fontWeight: "600" }
+              { color: "#ffcbc7", fontSize: 15, marginRight: 14, fontWeight: "600" }
             }>DONE</Text>
           </TouchableOpacity>
         )
@@ -241,9 +263,19 @@ class FavesScreen extends React.Component {
   
 
   render() {
+    console.log("STATE:", this.state);
+    if (this.state.noFavesYet) {
+      return (
+        <View style={{ flexGrow: 1, width: "100%", alignItems: "center", justifyContent: "center" }}>
+          <Text style={{ opacity: 0.3, fontSize: 18, paddingBottom: 100 }}>No favorites yet</Text>
+        </View>
+      )
+    }
+
     if (this.state.editing) {
       this.handleAnimation();
     }
+    
     return (
       <ScrollView 
         contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }} 
@@ -254,7 +286,7 @@ class FavesScreen extends React.Component {
           <DraggableGrid
             numColumns={2}
             renderItem={this.renderItem}
-            itemHeight={60}
+            itemHeight={65}
             data={this.state.orderedFaves}
             dragEnabled={this.state.editing}
             onLongPress={this.handleEditingLongPress}

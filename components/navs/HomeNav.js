@@ -13,7 +13,8 @@ export default () => {
     <View style={{height: "100%", width: "100%"}}>
     <Stack.Navigator>
       <Stack.Screen name="Home" component={HomeScreen} options={ styles.options } />
-      <Stack.Screen name="Mood" component={MoodScreen} options={ styles.moodOptions } />
+      <Stack.Screen name="Mood" component={MoodScreen} options={ styles.moodOptions }
+       />
     </Stack.Navigator>
     </View>
   );
@@ -38,5 +39,9 @@ const styles = {
       color: "#facbc8"
     },
     headerTintColor: "#fcddd9",
+    gestureResponseDistance: {
+      horizontal: 300
+    },
+    gestureVelocityImpact: 0.2
   }
 };

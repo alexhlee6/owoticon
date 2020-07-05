@@ -47,11 +47,12 @@ class MoodScreen extends React.Component {
       faves: this.props.faves,
       orderedFaves: this.props.orderedFaves,
     }
+    this.renderEditButton();
     this.handleTouch = this.handleTouch.bind(this);
   }
 
   componentDidMount() {
-    this.renderHeaderTitle();
+    
   }
   
   componentDidUpdate(prevProps) {
@@ -79,9 +80,47 @@ class MoodScreen extends React.Component {
     }
   }
 
-  renderHeaderTitle = () => {
+  handleEditButtonPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    if (this.state.editing) {
+      this.setState({ editing: false });
+      this.renderEditButton();
+    } else {
+      this.setState({ editing: true });
+      this.renderEditButton();
+    }
+  }
+
+  renderEditButton = () => {
     this.props.navigation.setOptions({
       title: this.state.moodName,
+      headerRight: () => {
+        return !this.state.editing ? (
+          <TouchableOpacity
+            style={{ position: "relative" }}
+            onPress={this.handleEditButtonPress}
+          >
+            <FAIcon name="heart-o" color="#ffd4cf" size={29}
+              style={{ marginRight: 14 }}
+            />
+            <OcticonsIcon name="plus" color="#ffd4cf" size={14}
+              style={{
+                marginRight: 14, position: "absolute", zIndex: 5, bottom: 10,
+                left: 15
+              }}
+            />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={{ position: "relative" }}
+            onPress={this.handleEditButtonPress}
+          >
+            <Text onPress={this.handleEditButtonPress} style = {
+              { color: "#ffd4cf", fontSize: 15, marginRight: 14, fontWeight: "600" }
+            }>DONE</Text>
+          </TouchableOpacity>
+        )
+      }
     });
   }
 
@@ -146,55 +185,95 @@ class MoodScreen extends React.Component {
     }
   }
 
+  // renderOption = (item) => {
+  //   return (
+  //     <TouchableOpacity
+  //       key={item.id}
+  //       style={styles.item}
+  //       // onLongPress={event => this.handleLongPress(item, event)}
+  //     >
+  //       {/* <View style={{ width: "100%", height: "100%", zIndex: 10 }}> */}
+  //       <Text style={{ color: "gray" }}>{item.title}</Text>
+  //       {/* </View> */}
+  //     </TouchableOpacity>
+  //   )
+  // }
+
   renderItem = (str, i) => {
+    // let listData =  [{
+    //   id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    //   title: 'Add to Favorites',
+    // },
+    // {
+    //   id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+    //   title: 'Share',
+    // },
+    // ];
+
+    // let flatlist = (
+    //   <SafeAreaView>
+    //     <FlatList 
+    //       style={{ position: "absolute", top: 0, zIndex: 10}}
+    //       data={listData}
+    //       renderItem={(item) => this.renderOption(item)}
+    //     ></FlatList>
+    //   </SafeAreaView>
+    // );
+
     const rightPos = i % 2 === 0 ? 140 : -2;
-    const buttonStyle = Object.assign({}, styles.favoriteButton);
-    buttonStyle.right = rightPos;
-    buttonStyle.top = -5;
+      const buttonStyle = Object.assign({}, styles.favoriteButton);
+      buttonStyle.right = rightPos;
+      buttonStyle.top = -5;
 
-    const emoteName = this.state.moodName.toLowerCase() + "-" + i;
-    
-    const onPress = this.state.faves[emoteName] ? this.removeFromFaves(emoteName) : this.addToFaves(emoteName, str);
+      const emoteName = this.state.moodName.toLowerCase() + "-" + i;
+      
+      const favesIcon = (
+        this.state.faves[emoteName] ? (
+          // flatlist
+        <View style={ { ...buttonStyle, backgroundColor: "transparent", borderColor: "transparent" } }>
+        <FAIcon name="heart" color="#ffd4cf" size={20}
+          // style={{ paddingTop: 3, position: "absolute" }}
+          style={{ paddingTop: 3 }}
+        />
+        </View>
+      ) 
+        : (
+          <View style={{...buttonStyle, backgroundColor: "transparent", borderColor: "transparent"}}>
+            <FAIcon name="heart-o" color="#ffd4cf" size={20}
+              style={{ paddingTop: 3  }}
+            />
+          </View>
+        )
+      );
 
-    const favesIcon = (
-      this.state.faves[emoteName] ? (
-        <TouchableOpacity 
-          onPress={onPress} 
-          style={ { ...buttonStyle, backgroundColor: "transparent", borderColor: "transparent" } }
-        >
-          <FAIcon name="heart" color="#ffd7d4" size={20}
-            style={{ paddingTop: 3 }}
-          />
-        </TouchableOpacity>
-    ) 
-      : (
-        <TouchableOpacity 
-          onPress={onPress} 
-          style={{...buttonStyle, backgroundColor: "transparent", borderColor: "transparent"}}
-        >
-          <FAIcon name="heart-o" color="#ffd4d1" size={20}
-            style={{ paddingTop: 3  }}
-          />
-        </TouchableOpacity>
-      )
-    );
+      if (this.state.editing) {
+        return (
+          <TouchableOpacity key={`container-${i}`} style={ styles.emoteContainer } onPress={ this.state.faves[emoteName] ? this.removeFromFaves(emoteName) : this.addToFaves(emoteName, str) }>
+            <View style={styles.emoteBackground}>
+              { favesIcon }
+              <Text key={i} style={styles.emoteText}>
+                {str}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        );
+      }
 
-    return (
-      <View key={`container-${i}`} style={ styles.emoteContainer }>
-        <TouchableOpacity 
-          key={`touchable-${i}`} 
-          onPress={this.handleTouch(str)} onLongPress={this.handleMenuLongPress(str)}
-        >
-          <View style={styles.emoteBackground}>
-            { favesIcon }
+      return (
+        <View key={`container-${i}`} style={ styles.emoteContainer }>
+          <TouchableOpacity key={i} 
+            onPress={this.handleTouch(str)} onLongPress={this.handleMenuLongPress(str)}
+          >
+            <View style={styles.emoteBackground}>
             { this.state.justTouched === str ? <Text style={styles.copiedText}>Copied!</Text> : null }
+            { this.state.editing && favesIcon }
             <Text key={i} style={styles.emoteText}>
               {str}
             </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
+            </View>
+          </TouchableOpacity>
+        </View>
+      );
   }
 
   render() {
