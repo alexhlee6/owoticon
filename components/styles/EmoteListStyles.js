@@ -45,7 +45,7 @@ export default StyleSheet.create({
   },
   copiedText: {
     color: "#ffc6bd",
-    fontSize: 18,
+    fontSize: 19,
     position: "absolute",
     zIndex: 3,
     backgroundColor: "white",

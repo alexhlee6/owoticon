@@ -4,7 +4,7 @@ import { getAllFaves, addFave, deleteFave } from '../../redux/actions/fave_actio
 const mSTP = (state, ownProps) => {
   return {
     faves: state.faves.faves,
-    
+    orderedFaves: state.faves.orderedFaves
   }
 }
 const mDTP = (dispatch) => {
@@ -17,15 +17,12 @@ const mDTP = (dispatch) => {
 
 import React from "react";
 import { 
-  ScrollView, Text, View, Clipboard, TouchableWithoutFeedback, TouchableOpacity, Share,
-  Button,
-  FlatList, SafeAreaView
+  ScrollView, Text, View, Clipboard, TouchableOpacity, Share,
 } from 'react-native';
 
 import { EMOTES } from "./util/MoodUtil";
 import styles from '../styles/EmoteListStyles';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
-import OcticonsIcon from 'react-native-vector-icons/Octicons';
 import * as Haptics from 'expo-haptics';
 
 
@@ -46,6 +43,7 @@ class MoodScreen extends React.Component {
       emotes: EMOTES[moodName],
       faves: this.props.faves,
       orderedFaves: this.props.orderedFaves,
+      emoteNamePrefix: moodName.toLowerCase() + "-"
     }
     this.handleTouch = this.handleTouch.bind(this);
   }
@@ -149,10 +147,13 @@ class MoodScreen extends React.Component {
   renderItem = (str, i) => {
     const rightPos = i % 2 === 0 ? 140 : -2;
     const buttonStyle = Object.assign({}, styles.favoriteButton);
+    // const buttonStyle = styles.favoriteButton;
     buttonStyle.right = rightPos;
     buttonStyle.top = -5;
+    buttonStyle.backgroundColor = "transparent";
+    buttonStyle.borderColor = "transparent";
 
-    const emoteName = this.state.moodName.toLowerCase() + "-" + i;
+    const emoteName = this.state.emoteNamePrefix + i;
     
     const onPress = this.state.faves[emoteName] ? this.removeFromFaves(emoteName) : this.addToFaves(emoteName, str);
 
@@ -160,7 +161,7 @@ class MoodScreen extends React.Component {
       this.state.faves[emoteName] ? (
         <TouchableOpacity 
           onPress={onPress} 
-          style={ { ...buttonStyle, backgroundColor: "transparent", borderColor: "transparent" } }
+          style={ buttonStyle }
         >
           <FAIcon name="heart" color="#ffd7d4" size={20}
             style={{ paddingTop: 3 }}
@@ -170,7 +171,7 @@ class MoodScreen extends React.Component {
       : (
         <TouchableOpacity 
           onPress={onPress} 
-          style={{...buttonStyle, backgroundColor: "transparent", borderColor: "transparent"}}
+          style={ buttonStyle }
         >
           <FAIcon name="heart-o" color="#ffd4d1" size={20}
             style={{ paddingTop: 3  }}
