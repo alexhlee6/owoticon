@@ -14,6 +14,7 @@ const store = configureStore();
 import Header from "./components/Header";
 import MainNav from "./components/navs/MainNav.js";
 
+import { configureFavesOnInit } from './redux/util/storage_util';
 
 function cacheImages(images) {
   return images.map(image => {
@@ -24,10 +25,6 @@ function cacheImages(images) {
     }
   });
 }
-
-// function cacheFonts(fonts) {
-//   return fonts.map(font => Font.loadAsync(font));
-// }
 
 export default class App extends React.Component {
 
@@ -43,18 +40,21 @@ export default class App extends React.Component {
     ];
 
     const imageAssets = cacheImages(images);
-
-    // const fontAssets = cacheFonts([FontAwesome.font]);
     return Promise.all([...imageAssets]);
-    // return Promise.all(cacheImages);
   }
+
+  configureFaves = () => {
+    configureFavesOnInit();
+    this.setState({ isReady: true });
+  }
+
 
   render() {
     if (!this.state.isReady) {
       return (
         <AppLoading
           startAsync={this._cacheResourcesAsync}
-          onFinish={() => this.setState({ isReady: true })}
+          onFinish={this.configureFaves}
           onError={console.warn}
         />
       );

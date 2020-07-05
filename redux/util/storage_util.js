@@ -41,7 +41,7 @@ export const storeAllData = async (faves, orderedFaves) => {
 export const retrieveAllData = async () => {
   const allKeys = await AsyncStorage.getAllKeys().then(res => res);
   
-  if (allKeys.length === 0) { // No faves yet:
+  if (allKeys.length < 2) { // No faves yet:
     return { "faves": {}, "orderedFaves": [] };
   } 
   
@@ -49,14 +49,38 @@ export const retrieveAllData = async () => {
 
   const faves = JSON.parse(allData[0][1]);
   const orderedFaves = JSON.parse(allData[1][1]);
-  // console.log({
-  //   faves,
-  //   orderedFaves
-  // })
-
-  //console.log({ faves, orderedFaves });
+  
   return { faves, orderedFaves };
 };
+
+
+// Check for dups / missing faves on init 
+export const configureFavesOnInit = async () => {
+  let allData = await retrieveAllData().then(data => data);
+
+  let newFaves = Object.assign({}, allData["faves"]);
+  let orderedFaves = allData["orderedFaves"];
+  let newOrderedFaves = [];
+  let dupCheck = new Set();
+
+  // do not include objects in ordered faves that aren't in faves 
+  orderedFaves.forEach(item => {
+    // if newFaves has the item AND its not a duplicate 
+    if (newFaves[item.key] && !dupCheck.has(item.key)) {
+      dupCheck.add(item.key)
+      newOrderedFaves.push(item);
+    } 
+  });
+  Object.keys(allData["faves"]).forEach(key => {
+    if (!dupCheck.has(key)) {
+      delete newFaves[key];
+    }
+  });
+
+  const newData = await storeAllData(newFaves, newOrderedFaves)
+    .then(data => data);
+  return newData;
+}
 
 
 export const deleteAllData = async () => {
@@ -65,6 +89,7 @@ export const deleteAllData = async () => {
   await AsyncStorage.removeItem("orderedFaves");
   return true;
 }
+
 /*
   DATA EXAMPLE: 
 

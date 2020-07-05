@@ -27,7 +27,9 @@ class HomeScreen extends React.Component {
   }
   
   componentDidMount() {
-    this.props.getAllFaves().then(() => this.setState({faves: this.props.faves, orderedFaves: this.props.orderedFaves}));
+    this.props.getAllFaves().then(() => {
+      this.setState({faves: this.props.faves, orderedFaves: this.props.orderedFaves})
+    });
   }
 
   componentDidUpdate() {
