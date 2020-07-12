@@ -49,6 +49,7 @@ class MoodScreen extends React.Component {
 
   componentDidMount() {
     this.renderHeaderTitle();
+    console.log(this.state);
   }
   
   componentDidUpdate(prevProps) {
